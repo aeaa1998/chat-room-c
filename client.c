@@ -49,7 +49,7 @@ int check_is_private(char message[])
 {
     int i;
     int end = 3;
-    int holder[3];
+    char holder[3] = {};
     for (i = 0; i < end; i++)
     {
         holder[i] = message[i];

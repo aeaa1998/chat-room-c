@@ -118,7 +118,7 @@ int check_is_private(char *message)
 {
     int i;
     int end = 2;
-    int holder[2] = {};
+    char holder[2] = {};
     for (i = 0; i < end; i++)
     {
         holder[i] = message[i];
