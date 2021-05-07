@@ -57,7 +57,7 @@ int check_is_private(char message[])
     }
     if (strcmp(holder, " -p ") == 0)
     {
-        return 0;
+        return 1;
     }
     else
     {
@@ -163,7 +163,7 @@ int main(int argc, char **argv)
     signal(SIGINT, catch_ctrl_c_and_exit);
 
     // printf("Please enter your name: ");
-    strcpy(name, &argv[2]);
+    strcpy(name, argv[2]);
     // fgets(name, 32, stdin);
     str_trim_lf(name, strlen(name));
 

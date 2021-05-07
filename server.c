@@ -138,11 +138,11 @@ void send_message(char *mess, int uid)
 {
     pthread_mutex_lock(&clients_mutex);
     int isPrivate = 0;
-    // if (check_is_private(mess) == 1)
-    // {
-    //     isPrivate = 1;
-    // }
-    if (isPrivate == 1)
+    if (check_is_private(mess) == 1)
+    {
+        isPrivate = 1;
+    }
+    if (isPrivate)
     {
         int i;
         int counter = 0;
