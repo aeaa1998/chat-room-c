@@ -99,7 +99,7 @@ int main(int argc, char **argv)
     }
 
     int port = atoi(argv[1]);
-    char *ip = "172.31.41.52";
+    char *ip = "ip-172-31-41-52.us-east-2.compute.internal";
 
     signal(SIGINT, catch_ctrl_c_and_exit);
 
