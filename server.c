@@ -123,7 +123,7 @@ int check_is_private(char *message)
     {
         holder[i] = message[i];
     }
-    if (strcmp(holder, "-p"))
+    if (strcmp(holder, "-p") == 0)
     {
         return 1;
     }
