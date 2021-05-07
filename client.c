@@ -99,7 +99,7 @@ int main(int argc, char **argv)
     }
 
     int port = atoi(argv[1]);
-    char *ip = "13.58.87.181";
+    char *ip = "ec2-13-58-87-181.us-east-2.compute.amazonaws.com";
 
     signal(SIGINT, catch_ctrl_c_and_exit);
 
