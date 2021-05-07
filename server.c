@@ -147,7 +147,7 @@ void send_message(char *mess, int uid)
         int i;
         int counter = 0;
         char username[300] = {};
-        for (i = 2; i < strlen(mess); i++)
+        for (i = 3; i < strlen(mess); i++)
         {
             if (mess[i] == ' ')
             {
@@ -159,9 +159,9 @@ void send_message(char *mess, int uid)
             counter++;
         }
         char real_message[strlen(mess)];
-        for (i = 0; i < strlen(mess) - counter - 2 - 1; i++)
+        for (i = 0; i < strlen(mess) - counter - 3 - 1; i++)
         {
-            real_message[i] = mess[2 + counter + i];
+            real_message[i] = mess[3 + counter + i];
             for (int i = 0; i < MAX_CLIENTS; ++i)
             {
                 if (clients[i])
