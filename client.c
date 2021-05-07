@@ -84,15 +84,14 @@ void send_msg_handler()
             if (check_is_private(message) == 1)
             {
                 int i;
-                int offset = 0;
-                int end = offset + 3;
+                int end = 3;
                 char new_message[LENGTH] = {};
                 char username[LENGTH] = {};
                 int goOn = 0;
                 int extraOffset = 0;
                 for (i = end; i < strlen(message); i++)
                 {
-                    if (message[i] = ' ' && goOn == 0)
+                    if (message[i] == ' ' && goOn == 0)
                     {
                         goOn = 1;
                     }
