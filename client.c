@@ -92,7 +92,7 @@ void send_msg_handler()
                 int extraOffset = 0;
                 for (i = end; i < strlen(message); i++)
                 {
-                    if (strcmp(message[i], " ") == 0)
+                    if (message[i] = ' ')
                     {
                         goOn = 1;
                     }
