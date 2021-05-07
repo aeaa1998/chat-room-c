@@ -96,10 +96,10 @@ void send_msg_handler()
                     {
                         goOn = 1;
                     }
-                    // else if (goOn == 1)
-                    // {
-                    //     new_message[i - end - extraOffset] = message[i];
-                    // }
+                    else if (goOn == 1)
+                    {
+                        new_message[i - end - extraOffset] = message[i];
+                    }
                     else
                     {
                         username[i - end] = message[i];
@@ -109,10 +109,10 @@ void send_msg_handler()
 
                 sprintf(buffer, "-p %s %s (private) -> %s: %s\n", username, name, username, new_message);
             }
-            else
-            {
-                sprintf(buffer, "%s: %s\n", name, message);
-            }
+            // else
+            // {
+            //     sprintf(buffer, "%s: %s\n", name, message);
+            // }
 
             send(sockfd, buffer, strlen(buffer), 0);
         }
