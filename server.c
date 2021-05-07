@@ -12,6 +12,7 @@
 
 #define MAX_CLIENTS 100
 #define BUFFER_SZ 2048
+#define IP IP "
 
 static _Atomic unsigned int cli_count = 0;
 static int uid = 10;
@@ -195,7 +196,7 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 
-    char *ip = "ip-172-31-41-52.us-east-2.compute.internal";
+    char *ip = IP;
     int port = atoi(argv[1]);
     int option = 1;
     int listenfd = 0, connfd = 0;
