@@ -96,10 +96,10 @@ void send_msg_handler()
                     {
                         goOn = 1;
                     }
-                    else if (goOn == 1)
-                    {
-                        new_message[i - end - extraOffset] = message[i];
-                    }
+                    // else if (goOn == 1)
+                    // {
+                    //     new_message[i - end - extraOffset] = message[i];
+                    // }
                     else
                     {
                         username[i - end] = message[i];
