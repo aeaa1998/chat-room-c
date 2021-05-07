@@ -195,7 +195,7 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 
-    char *ip = "127.0.0.1";
+    char *ip = "172.31.41.52";
     int port = atoi(argv[1]);
     int option = 1;
     int listenfd = 0, connfd = 0;
