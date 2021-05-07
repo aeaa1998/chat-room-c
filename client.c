@@ -164,7 +164,7 @@ int main(int argc, char **argv)
 
     // printf("Please enter your name: ");
 
-    strcpy(argv[2], &name);
+    strcpy(&argv[2], name);
     // fgets(name, 32, stdin);
     str_trim_lf(name, strlen(name));
 
