@@ -11,7 +11,11 @@
 
 #define LENGTH 2048
 #define IP "127.0.0.1"
+#define ACTIVO = 1
+#define OCUPADO = 2
+#define INACTIVO = 3
 // Global variables
+
 volatile sig_atomic_t flag = 0;
 int sockfd = 0;
 char name[32];
@@ -40,6 +44,22 @@ void catch_ctrl_c_and_exit(int sig)
     flag = 1;
 }
 
+int check_is_private(char message[])
+{
+    int i;
+    int offset = strlen(name);
+    char checkFlag[3];
+    for (i = offset + 2; i < (offset + 5); i++)
+    {
+        checkFlag[i - (offset + 2)] = message[i];
+    }
+    if (strcmp(checkFlag, "-p "))
+    {
+        return 1;
+    }
+    return 0;
+}
+
 void send_msg_handler()
 {
     char message[LENGTH] = {};
@@ -57,7 +77,14 @@ void send_msg_handler()
         }
         else
         {
-            sprintf(buffer, "%s: %s\n", name, message);
+            if (check_is_private(message))
+            {
+                sprintf(buffer, "%s (mensaje privado): %s\n", name, message);
+            }
+            else
+            {
+                sprintf(buffer, "%s: %s\n", name, message);
+            }
             send(sockfd, buffer, strlen(buffer), 0);
         }
 
@@ -99,12 +126,14 @@ int main(int argc, char **argv)
     }
 
     int port = atoi(argv[1]);
+
     char *ip = IP;
 
     signal(SIGINT, catch_ctrl_c_and_exit);
 
-    printf("Please enter your name: ");
-    fgets(name, 32, stdin);
+    // printf("Please enter your name: ");
+    strcpy(argv[2], name);
+    // fgets(name, 32, stdin);
     str_trim_lf(name, strlen(name));
 
     if (strlen(name) > 32 || strlen(name) < 2)

@@ -13,6 +13,9 @@
 #define MAX_CLIENTS 100
 #define BUFFER_SZ 2048
 #define IP "127.0.0.1"
+#define ACTIVO 1
+#define OCUPADO 2
+#define INACTIVO 3
 
 static _Atomic unsigned int cli_count = 0;
 static int uid = 10;
@@ -24,6 +27,7 @@ typedef struct
     int sockfd;
     int uid;
     char name[32];
+    int status;
 } client_t;
 
 client_t *clients[MAX_CLIENTS];
@@ -93,6 +97,21 @@ void queue_remove(int uid)
     }
 
     pthread_mutex_unlock(&clients_mutex);
+}
+
+/* Print requested client */
+client_t *return_client(int uid)
+{
+    for (int i = 0; i < MAX_CLIENTS; ++i)
+    {
+        if (clients[i])
+        {
+            if (clients[i]->uid == uid)
+            {
+                return clients[i];
+            }
+        }
+    }
 }
 
 /* Send message to all clients except sender */
@@ -255,6 +274,7 @@ int main(int argc, char **argv)
         cli->address = cli_addr;
         cli->sockfd = connfd;
         cli->uid = uid++;
+        cli->status = ACTIVO;
 
         /* Add client to the queue and fork thread */
         queue_add(cli);
