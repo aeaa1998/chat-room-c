@@ -158,9 +158,10 @@ void send_message(char *mess, int uid)
         }
         char real_message[strlen(mess)];
 
-        for (i = 0; i < strlen(mess) - counter; i++)
+        for (i = 0; i < strlen(mess) - counter - 2; i++)
         {
-            real_message[i] = mess[2 + counter - 1 + i];
+            printf("%d\n", 2 + counter + i);
+            real_message[i] = mess[2 + counter + i];
             for (int i = 0; i < MAX_CLIENTS; ++i)
             {
                 if (clients[i])
