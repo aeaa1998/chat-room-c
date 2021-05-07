@@ -153,6 +153,7 @@ void send_message(char *mess, int uid)
             {
                 break;
             }
+            printf("aca %s\n", mess[i]);
             username[i - 2] = mess[i];
             counter++;
         }
