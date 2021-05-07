@@ -1,0 +1,1 @@
+sudo ssh -i "chatroom.pem" 13.58.87.181 -l ubuntu
