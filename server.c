@@ -164,7 +164,7 @@ void send_message(char *mess, int uid)
             {
                 if (clients[i])
                 {
-                    printf("client name %s, send: %s\n", strcmp(clients[i]->name, username);
+                    printf("client name %s, send: %s\n", strcmp(clients[i]->name, username));
                     if (strcmp(clients[i]->name, username) == 0)
                     {
                         if (write(clients[i]->sockfd, real_message, strlen(real_message)) < 0)
