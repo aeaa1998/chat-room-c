@@ -176,7 +176,7 @@ void send_message(char *mess, int uid)
             counter++;
         }
         char real_message[strlen(mess) - (2 + counter)];
-        strncpy(real_message, &message[2 + counter - 1], strlen(mess));
+        strncpy(real_message, &mess[2 + counter - 1], strlen(mess));
     }
     else
     {
