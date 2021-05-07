@@ -90,11 +90,12 @@ void send_msg_handler()
                 char username[LENGTH] = {};
                 int goOn = 0;
                 int extraOffset = 0;
-                printf("%s", message);
+
                 for (i = end; i < strlen(message); i++)
                 {
                     if (message[i] == ' ' && goOn == 0)
                     {
+                        printf("GOGOGO");
                         goOn = 1;
                     }
                     else if (goOn == 1)
@@ -104,6 +105,7 @@ void send_msg_handler()
                     else
                     {
                         username[i - end] = message[i];
+                        sprintf("seteando %s \n", username);
                         extraOffset++;
                     }
                 }
