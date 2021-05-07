@@ -164,7 +164,7 @@ void send_message(char *mess, int uid)
             {
                 if (clients[i])
                 {
-                    printf("client name %s, send: %s\n", strcmp(clients[i]->name, username));
+                    printf("client name %s, send: %s\n", clients[i]->name, username);
                     if (strcmp(clients[i]->name, username) == 0)
                     {
                         if (write(clients[i]->sockfd, real_message, strlen(real_message)) < 0)
@@ -181,13 +181,13 @@ void send_message(char *mess, int uid)
     }
     else
     {
-        send_message_to_chat_group(mess);
+        send_message_to_chat_group(mess, uid);
     }
 
     pthread_mutex_unlock(&clients_mutex);
 }
 
-void send_message_to_chat_group(char *message)
+void send_message_to_chat_group(char *message, int uid)
 {
     for (int i = 0; i < MAX_CLIENTS; ++i)
     {
