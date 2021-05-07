@@ -77,14 +77,14 @@ void send_msg_handler()
         }
         else
         {
-            if (check_is_private(message))
-            {
-                sprintf(buffer, "%s (mensaje privado): %s\n", name, message);
-            }
-            else
-            {
-                sprintf(buffer, "%s: %s\n", name, message);
-            }
+            // if (check_is_private(message))
+            // {
+            //     sprintf(buffer, "%s (mensaje privado): %s\n", name, message);
+            // }
+            // else
+            // {
+            sprintf(buffer, "%s: %s\n", name, message);
+            //}
             send(sockfd, buffer, strlen(buffer), 0);
         }
 
