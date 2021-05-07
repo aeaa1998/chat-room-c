@@ -151,6 +151,7 @@ void send_message(char *mess, int uid)
         {
             if (mess[i] == " ")
             {
+                printf("aca hay un espacio %d \n", i);
                 break;
             }
             username[i - 2] = mess[i];
