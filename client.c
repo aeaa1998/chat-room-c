@@ -44,22 +44,6 @@ void catch_ctrl_c_and_exit(int sig)
     flag = 1;
 }
 
-int check_is_private(char message[])
-{
-    int i;
-    int offset = strlen(name);
-    char checkFlag[3];
-    for (i = offset + 2; i < (offset + 5); i++)
-    {
-        checkFlag[i - (offset + 2)] = message[i];
-    }
-    if (strcmp(checkFlag, "-p "))
-    {
-        return 1;
-    }
-    return 0;
-}
-
 void send_msg_handler()
 {
     char message[LENGTH] = {};
@@ -77,14 +61,8 @@ void send_msg_handler()
         }
         else
         {
-            // if (check_is_private(message))
-            // {
-            //     sprintf(buffer, "%s (mensaje privado): %s\n", name, message);
-            // }
-            // else
-            // {
+
             sprintf(buffer, "%s: %s\n", name, message);
-            //}
             send(sockfd, buffer, strlen(buffer), 0);
         }
 
