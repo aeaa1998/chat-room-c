@@ -10,7 +10,7 @@
 #include <pthread.h>
 
 #define LENGTH 2048
-
+#define IP "ip-172-31-41-52.us-east-2.compute.internal"
 // Global variables
 volatile sig_atomic_t flag = 0;
 int sockfd = 0;
@@ -99,7 +99,7 @@ int main(int argc, char **argv)
     }
 
     int port = atoi(argv[1]);
-    char *ip = "ip-172-31-41-52.us-east-2.compute.internal";
+    char *ip = IP;
 
     signal(SIGINT, catch_ctrl_c_and_exit);
 
