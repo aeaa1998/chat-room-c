@@ -151,11 +151,9 @@ void send_message(char *mess, int uid)
         {
             if (mess[i] == ' ')
             {
-                printf("aca acabo %s\n", username);
                 break;
             }
             username[i - 3] = mess[i];
-            printf("aca %s\n", username);
             counter++;
         }
         char real_message[strlen(mess)];
@@ -169,7 +167,7 @@ void send_message(char *mess, int uid)
                     printf("client name %s, send: %s\n", clients[i]->name, username);
                     if (strcmp(clients[i]->name, username) == 0)
                     {
-                        if (write(clients[i]->sockfd, real_message, strlen(real_message)) < 0)
+                        if (write(clients[i]->sockfd, &real_message, strlen(real_message)) < 0)
                         {
                             perror("ERROR: write to descriptor failed");
                             break;
