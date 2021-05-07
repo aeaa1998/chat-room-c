@@ -55,7 +55,7 @@ int check_is_private(char message[])
     {
         holder[i - offset] = message[i];
     }
-    if (strcmp(holder, " -p "))
+    if (strcmp(holder, " -p ") == 0)
     {
         return 1;
     }
