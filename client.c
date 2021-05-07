@@ -48,14 +48,14 @@ void catch_ctrl_c_and_exit(int sig)
 int check_is_private(char message[])
 {
     int i;
-    int offset = strlen(name) + 2;
-    int end = offset + 4;
-    int holder[4] = {};
+    int offset = 0;
+    int end = offset + 3;
+    int holder[3] = {};
     for (i = offset; i < end; i++)
     {
         holder[i - offset] = message[i];
     }
-    if (strcmp(holder, " -p ") == 0)
+    if (strcmp(holder, "-p ") == 0)
     {
         return 1;
     }
@@ -85,8 +85,8 @@ void send_msg_handler()
             if (check_is_private(message) == 1)
             {
                 int i;
-                int offset = strlen(name) + 2;
-                int end = offset + 4;
+                int offset = 0;
+                int end = offset + 3;
                 char new_message[LENGTH] = {};
                 char username[LENGTH] = {};
                 int goOn = 0;
