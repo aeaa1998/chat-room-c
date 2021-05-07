@@ -10,7 +10,7 @@
 #include <pthread.h>
 
 #define LENGTH 2048
-#define IP "13.58.87.181"
+#define IP "127.0.0.1"
 // Global variables
 volatile sig_atomic_t flag = 0;
 int sockfd = 0;
