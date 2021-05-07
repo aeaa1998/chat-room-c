@@ -107,7 +107,7 @@ void send_msg_handler()
                     }
                 }
 
-                sprintf(buffer, "-p%s %s (private) -> %s: %s\n", username, name, username, new_message);
+                sprintf(buffer, "-p %s %s (private) -> %s: %s\n", username, name, username, new_message);
             }
             else
             {
