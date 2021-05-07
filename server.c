@@ -12,7 +12,7 @@
 
 #define MAX_CLIENTS 100
 #define BUFFER_SZ 2048
-#define IP IP "
+#define IP "127.0.0.1"
 
 static _Atomic unsigned int cli_count = 0;
 static int uid = 10;
