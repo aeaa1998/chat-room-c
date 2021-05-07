@@ -157,7 +157,7 @@ void send_message(char *mess, int uid)
             counter++;
         }
         char real_message[strlen(mess)];
-
+        printf("Len %d\n", strlen(mess));
         for (i = 0; i < strlen(mess) - counter - 2 - 1; i++)
         {
             printf("%d\n", 2 + counter + i);
