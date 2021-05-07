@@ -90,6 +90,7 @@ void send_msg_handler()
                 char username[LENGTH] = {};
                 int goOn = 0;
                 int extraOffset = 0;
+                printf("%s", message);
                 for (i = end; i < strlen(message); i++)
                 {
                     if (message[i] == ' ' && goOn == 0)
@@ -107,12 +108,12 @@ void send_msg_handler()
                     }
                 }
 
-                // sprintf(buffer, "-p %s %s (private) -> %s: %s\n", username, name, username, new_message);
+                sprintf(buffer, "-p %s %s (private) -> %s: %s\n", username, name, username, new_message);
             }
-            // else
-            // {
-            //     sprintf(buffer, "%s: %s\n", name, message);
-            // }
+            else
+            {
+                sprintf(buffer, "%s: %s\n", name, message);
+            }
 
             send(sockfd, buffer, strlen(buffer), 0);
         }
