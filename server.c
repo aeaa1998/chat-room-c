@@ -151,22 +151,20 @@ void send_message(char *mess, int uid)
         {
             if (mess[i] == ' ')
             {
-                printf("aca hay un espacio %d \n", i);
                 break;
             }
             username[i - 2] = mess[i];
             counter++;
         }
         char real_message[strlen(mess)];
-        printf("Len %d\n", strlen(mess));
         for (i = 0; i < strlen(mess) - counter - 2 - 1; i++)
         {
-            printf("%d\n", 2 + counter + i);
             real_message[i] = mess[2 + counter + i];
             for (int i = 0; i < MAX_CLIENTS; ++i)
             {
                 if (clients[i])
                 {
+                    printf("client name %s, send: %s\n", strcmp(clients[i]->name, username);
                     if (strcmp(clients[i]->name, username) == 0)
                     {
                         if (write(clients[i]->sockfd, real_message, strlen(real_message)) < 0)
@@ -184,8 +182,6 @@ void send_message(char *mess, int uid)
     else
     {
         send_message_to_chat_group(mess);
-        // char real_message[strlen(mess)];
-        // strcpy(real_message, mess);
     }
 
     pthread_mutex_unlock(&clients_mutex);
