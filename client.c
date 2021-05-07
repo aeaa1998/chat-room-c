@@ -54,7 +54,7 @@ int check_is_private(char message[])
     {
         holder[i] = message[i];
         printf("comparing %s %d \n", holder, i);
-        printf("whaat %s\n", message[i], i);
+        printf("whaat %c\n", message[i], i);
     }
     if (strcmp(holder, "-p ") == 0)
     {
