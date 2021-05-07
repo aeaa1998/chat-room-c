@@ -14,6 +14,7 @@
 #define ACTIVO = 1
 #define OCUPADO = 2
 #define INACTIVO = 3
+// #define PRIVATE_FLAG "private"
 // Global variables
 
 volatile sig_atomic_t flag = 0;
@@ -44,6 +45,26 @@ void catch_ctrl_c_and_exit(int sig)
     flag = 1;
 }
 
+int check_is_private(char message[])
+{
+    int i;
+    int offset = strlen(name) + 2;
+    int end = offset + 4;
+    int holder[4] = {};
+    for (i = offset; i < end; i++)
+    {
+        holder[i - offset] = message[i];
+    }
+    if (strcmp(holder, " -p "))
+    {
+        return 1;
+    }
+    else
+    {
+        return -1;
+    }
+}
+
 void send_msg_handler()
 {
     char message[LENGTH] = {};
@@ -61,8 +82,39 @@ void send_msg_handler()
         }
         else
         {
+            if (check_is_private(message) == 1)
+            {
+                int i;
+                int offset = strlen(name) + 2;
+                int end = offset + 4;
+                char new_message[LENGTH] = {};
+                char username[LENGTH] = {};
+                int goOn = 0;
+                int extraOffset = 0;
+                for (i = end; i < strlen(message); i++)
+                {
+                    if (strcmp(message[i], " ") == 0)
+                    {
+                        goOn = 1;
+                    }
+                    else if (goOn == 1)
+                    {
+                        new_message[i - end - extraOffset] = message[i];
+                    }
+                    else
+                    {
+                        username[i - end] = message[i];
+                        extraOffset++;
+                    }
+                }
 
-            sprintf(buffer, "%s: %s\n", name, message);
+                sprintf(buffer, "-p%s %s (private) -> %s: %s\n", username, name, username, new_message);
+            }
+            else
+            {
+                sprintf(buffer, "%s: %s\n", name, message);
+            }
+
             send(sockfd, buffer, strlen(buffer), 0);
         }
 
@@ -97,7 +149,7 @@ void recv_msg_handler()
 
 int main(int argc, char **argv)
 {
-    if (argc != 2)
+    if (argc != 3)
     {
         printf("Usage: %s <port>\n", argv[0]);
         return EXIT_FAILURE;

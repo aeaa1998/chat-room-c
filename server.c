@@ -114,10 +114,75 @@ client_t *return_client(int uid)
     }
 }
 
-/* Send message to all clients except sender */
-void send_message(char *s, int uid)
+int check_is_private(char *message)
+{
+    int i;
+    int end = 3;
+    int holder[3] = {};
+    for (i = 0; i < end; i++)
+    {
+        holder[i] = message[i];
+    }
+    if (strcmp(holder, "-p"))
+    {
+        return 1;
+    }
+    else
+    {
+        return -1;
+    }
+}
+
+int check_is_private(char *message)
+{
+    int i;
+    int end = 2;
+    int holder[2] = {};
+    for (i = 0; i < end; i++)
+    {
+        holder[i] = message[i];
+    }
+    if (strcmp(holder, "-p"))
+    {
+        return 1;
+    }
+    else
+    {
+        return -1;
+    }
+}
+
+/* Manages what message to send private or not */
+void send_message(char *mess, int uid)
 {
     pthread_mutex_lock(&clients_mutex);
+    int isPrivate = 0;
+    if (check_is_private(mess) == 1)
+    {
+        isPrivate = 1;
+    }
+    if (isPrivate)
+    {
+        int i;
+        int counter = 0;
+        char username[30] = {};
+        for (i = 2; i < 30; i++)
+        {
+            if (mess[i] == " ")
+            {
+                break;
+            }
+            username[i - 2] = mess[i];
+            counter++;
+        }
+        char real_message[strlen(mess) - (2 + counter)];
+        strncpy(real_message, &message[2 + counter - 1], strlen(mess));
+    }
+    else
+    {
+        char real_message[strlen(mess)];
+        strcpy(real_message, mess);
+    }
 
     for (int i = 0; i < MAX_CLIENTS; ++i)
     {
@@ -125,7 +190,7 @@ void send_message(char *s, int uid)
         {
             if (clients[i]->uid != uid)
             {
-                if (write(clients[i]->sockfd, s, strlen(s)) < 0)
+                if (write(clients[i]->sockfd, mess, strlen(mess)) < 0)
                 {
                     perror("ERROR: write to descriptor failed");
                     break;
