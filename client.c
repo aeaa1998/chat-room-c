@@ -48,13 +48,12 @@ void catch_ctrl_c_and_exit(int sig)
 int check_is_private(char message[])
 {
     int i;
-    int offset = 0;
-    int end = offset + 3;
+    int end = 3;
     int holder[3] = {};
-    for (i = offset; i < end; i++)
+    for (i = 0; i < end; i++)
     {
-        holder[i - offset] = message[i];
-        printf("comparing %s", holder);
+        holder[i] = message[i];
+        printf("comparing %s %d \n", holder, i);
     }
     if (strcmp(holder, "-p ") == 0)
     {
