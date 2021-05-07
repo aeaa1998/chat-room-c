@@ -117,25 +117,6 @@ client_t *return_client(int uid)
 int check_is_private(char *message)
 {
     int i;
-    int end = 3;
-    int holder[3] = {};
-    for (i = 0; i < end; i++)
-    {
-        holder[i] = message[i];
-    }
-    if (strcmp(holder, "-p"))
-    {
-        return 1;
-    }
-    else
-    {
-        return -1;
-    }
-}
-
-int check_is_private(char *message)
-{
-    int i;
     int end = 2;
     int holder[2] = {};
     for (i = 0; i < end; i++)
