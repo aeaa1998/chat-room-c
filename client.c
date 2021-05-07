@@ -105,7 +105,7 @@ void send_msg_handler()
                     else
                     {
                         username[i - end] = message[i];
-                        sprintf("seteando %s \n", username);
+                        printf("seteando %s \n", username);
                         extraOffset++;
                     }
                 }
