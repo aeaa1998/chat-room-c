@@ -151,7 +151,7 @@ void send_message(char *mess, int uid)
         {
             if (mess[i] == ' ')
             {
-                printf("aca acabo %s\n", mess[i]);
+                printf("aca acabo %c\n", mess[i]);
                 break;
             }
             printf("aca %s\n", mess[i]);
