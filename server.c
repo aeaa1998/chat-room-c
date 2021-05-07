@@ -158,7 +158,7 @@ void send_message(char *mess, int uid)
         }
         char real_message[strlen(mess)];
 
-        for (i = 0; i < strlen(mess) - counter - 2; i++)
+        for (i = 0; i < strlen(mess) - counter - 2 - 1; i++)
         {
             printf("%d\n", 2 + counter + i);
             real_message[i] = mess[2 + counter + i];
