@@ -151,11 +151,11 @@ void send_message(char *mess, int uid)
         {
             if (mess[i] == ' ')
             {
-                printf("aca acabo %c\n", mess[i]);
+                printf("aca acabo %s\n", username);
                 break;
             }
-            printf("aca %c\n", mess[i]);
-            username[i - 2] = mess[i];
+            username[i - 3] = mess[i];
+            printf("aca %s\n", username);
             counter++;
         }
         char real_message[strlen(mess)];
