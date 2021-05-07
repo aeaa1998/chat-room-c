@@ -157,21 +157,47 @@ void send_message(char *mess, int uid)
             counter++;
         }
         char real_message[strlen(mess) - (2 + counter)];
-        strncpy(real_message, mess[2 + counter - 1], strlen(mess) - 2 + counter);
+
+        for (i = 0; i < strlen(mess) - (2 + counter); i++)
+        {
+            real_message[i] = mess[2 + counter - 1 + i];
+            for (int i = 0; i < MAX_CLIENTS; ++i)
+            {
+                if (clients[i])
+                {
+                    if (strcmp(clients[i]->name, username) == 0)
+                    {
+                        if (write(clients[i]->sockfd, real_message, strlen(real_message)) < 0)
+                        {
+                            perror("ERROR: write to descriptor failed");
+                            break;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        // strncpy(real_message, mess[2 + counter - 1], strlen(mess) - 2 + counter);
     }
     else
     {
+        send_message_to_chat_group(mess);
         // char real_message[strlen(mess)];
         // strcpy(real_message, mess);
     }
 
+    pthread_mutex_unlock(&clients_mutex);
+}
+
+void send_message_to_chat_group(char *message)
+{
     for (int i = 0; i < MAX_CLIENTS; ++i)
     {
         if (clients[i])
         {
             if (clients[i]->uid != uid)
             {
-                if (write(clients[i]->sockfd, mess, strlen(mess)) < 0)
+                if (write(clients[i]->sockfd, message, strlen(message)) < 0)
                 {
                     perror("ERROR: write to descriptor failed");
                     break;
@@ -179,8 +205,6 @@ void send_message(char *mess, int uid)
             }
         }
     }
-
-    pthread_mutex_unlock(&clients_mutex);
 }
 
 /* Handle all communication with the client */
