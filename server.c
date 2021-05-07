@@ -147,9 +147,9 @@ void send_message(char *mess, int uid)
         int i;
         int counter = 0;
         char username[30] = {};
-        for (i = 2; i < 30; i++)
+        for (i = 2; i < strlen(mess); i++)
         {
-            if (mess[i] == " ")
+            if (mess[i] == ' ')
             {
                 printf("aca hay un espacio %d \n", i);
                 break;
