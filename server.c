@@ -160,20 +160,20 @@ void send_message(char *mess, int uid)
         for (i = 0; i < strlen(mess) - counter - 3 - 1; i++)
         {
             real_message[i] = mess[3 + counter + i];
-            for (int i = 0; i < MAX_CLIENTS; ++i)
+        }
+        for (int i = 0; i < MAX_CLIENTS; ++i)
+        {
+            if (clients[i])
             {
-                if (clients[i])
+                printf("client name %s, send: %s\n", clients[i]->name, username);
+                if (strcmp(clients[i]->name, username) == 0)
                 {
-                    printf("client name %s, send: %s\n", clients[i]->name, username);
-                    if (strcmp(clients[i]->name, username) == 0)
+                    if (write(clients[i]->sockfd, &real_message, strlen(real_message)) < 0)
                     {
-                        if (write(clients[i]->sockfd, &real_message, strlen(real_message)) < 0)
-                        {
-                            perror("ERROR: write to descriptor failed");
-                            break;
-                        }
+                        perror("ERROR: write to descriptor failed");
                         break;
                     }
+                    break;
                 }
             }
         }
