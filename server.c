@@ -146,7 +146,7 @@ void send_message(char *mess, int uid)
     {
         int i;
         int counter = 0;
-        char username[30] = {};
+        char username[300] = {};
         for (i = 2; i < strlen(mess); i++)
         {
             if (mess[i] == ' ')
