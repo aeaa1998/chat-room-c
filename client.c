@@ -98,8 +98,8 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 
-    char *ip = "127.0.0.1";
     int port = atoi(argv[1]);
+    char *ip = "13.58.87.181";
 
     signal(SIGINT, catch_ctrl_c_and_exit);
 
