@@ -57,7 +57,7 @@ int check_is_private(char message[])
     }
     if (strcmp(holder, " -p ") == 0)
     {
-        return 1;
+        return 0;
     }
     else
     {

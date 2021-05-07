@@ -142,7 +142,7 @@ void send_message(char *mess, int uid)
     // {
     //     isPrivate = 1;
     // }
-    if (isPrivate)
+    if (isPrivate == 1)
     {
         int i;
         int counter = 0;
