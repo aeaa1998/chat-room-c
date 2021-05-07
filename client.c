@@ -84,7 +84,8 @@ void send_msg_handler()
             if (check_is_private(message) == 1)
             {
                 int i;
-                int end = 3;
+                int offset = 0;
+                int end = offset + 3;
                 char new_message[LENGTH] = {};
                 char username[LENGTH] = {};
                 int goOn = 0;
