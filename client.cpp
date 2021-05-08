@@ -74,12 +74,10 @@ void *send_msg_handler(void *arg)
 
     while (1)
     {
-        // str_overwrite_stdout();
-        // fgets(message, LENGTH, stdin);
-        // str_trim_lf(message, LENGTH);
-        printf("HERE1");
+        str_overwrite_stdout();
+        fgets(message, LENGTH, stdin);
+        str_trim_lf(message, LENGTH);
         Payload payload;
-        printf("HERE2");
         //payload.set_sender(&name);
         // payload.set_message(&message);
         payload.set_flag("message");
@@ -122,7 +120,6 @@ void *send_msg_handler(void *arg)
             // }
             // else
             // {
-            printf("HERE");
             string out;
             payload.SerializeToString(&out);
             sprintf(buffer, "%s", out);
@@ -147,7 +144,7 @@ void *recv_msg_handler(void *arg)
         if (receive > 0)
         {
             printf("%s \n", message);
-            // str_overwrite_stdout();
+            str_overwrite_stdout();
         }
         else if (receive == 0)
         {
