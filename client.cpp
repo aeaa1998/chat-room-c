@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <iostream>
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
@@ -17,6 +17,7 @@
 #define INACTIVO = 3
 // #define PRIVATE_FLAG "private"
 // Global variables
+using namespace std;
 
 volatile sig_atomic_t flag = 0;
 int sockfd = 0;
@@ -48,10 +49,9 @@ void catch_ctrl_c_and_exit(int sig)
 
 int check_is_private(char message[])
 {
-    int i;
     int end = 3;
     char holder[300] = {};
-    for (i = 0; i < end; i++)
+    for (int i = 0; i < end; i++)
     {
         holder[i] = message[i];
     }
@@ -77,47 +77,54 @@ void *send_msg_handler(void *arg)
         str_overwrite_stdout();
         fgets(message, LENGTH, stdin);
         str_trim_lf(message, LENGTH);
+        Payload payload;
 
+        payload->set_sender(&name);
+        payload->set_message(&message);
+        payload->set_flag("message");
+        // payload->set_message(std::string s(message));
         if (strcmp(message, "exit") == 0)
         {
             break;
         }
         else
         {
-            if (check_is_private(message) == 1)
-            {
-                int i;
-                int offset = 0;
-                int end = offset + 3;
-                char new_message[LENGTH] = {};
-                char username[LENGTH] = {};
-                int goOn = 0;
-                int extraOffset = 0;
+            // if (check_is_private(message) == 1)
+            // {
+            //     int i;
+            //     int offset = 0;
+            //     int end = offset + 3;
+            //     char new_message[LENGTH] = {};
+            //     char username[LENGTH] = {};
+            //     int goOn = 0;
+            //     int extraOffset = 0;
 
-                for (i = end; i < strlen(message); i++)
-                {
-                    if (message[i] == ' ' && goOn == 0)
-                    {
-                        goOn = 1;
-                    }
-                    else if (goOn == 1)
-                    {
-                        new_message[i - (end + extraOffset) - 1] = message[i];
-                    }
-                    else
-                    {
-                        username[i - end] = message[i];
-                        extraOffset++;
-                    }
-                }
-                sprintf(buffer, "-p %s %s (private) -> %s: %s\n", username, name, username, new_message);
-                bzero(new_message, LENGTH);
-                bzero(username, LENGTH);
-            }
-            else
-            {
-                sprintf(buffer, "%s: %s\n", name, message);
-            }
+            //     for (i = end; i < strlen(message); i++)
+            //     {
+            //         if (message[i] == ' ' && goOn == 0)
+            //         {
+            //             goOn = 1;
+            //         }
+            //         else if (goOn == 1)
+            //         {
+            //             new_message[i - (end + extraOffset) - 1] = message[i];
+            //         }
+            //         else
+            //         {
+            //             username[i - end] = message[i];
+            //             extraOffset++;
+            //         }
+            //     }
+            //     sprintf(buffer, "-p %s %s (private) -> %s: %s\n", username, name, username, new_message);
+            //     bzero(new_message, LENGTH);
+            //     bzero(username, LENGTH);
+            // }
+            // else
+            // {
+            string out;
+            payload->SerializeToString(&out);
+            sprintf(buffer, "%s", out);
+            // }
 
             send(sockfd, buffer, strlen(buffer), 0);
         }

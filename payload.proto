@@ -1,8 +1,8 @@
 syntax = "proto2";
 
 message Payload {
-  required string sender = 1;
-  required string message = 2;
-  required string flag = 3;
+  optional string sender = 1;
+  optional string message = 2;
+  optional string flag = 3;
   optional string extra = 4;
 }

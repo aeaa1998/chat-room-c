@@ -12,7 +12,7 @@
 
 #include <atomic>
 #define _Atomic(X) std::atomic<X>
-
+using namespace std;
 #define LENGTH 2048
 #define MAX_CLIENTS 100
 #define BUFFER_SZ 2048
@@ -21,7 +21,7 @@
 #define OCUPADO 2
 #define INACTIVO 3
 
-std::atomic<long> cli_count(0);
+atomic<long> cli_count(0);
 int uid = 10;
 
 /* Client structure */
@@ -87,7 +87,6 @@ void queue_add(client_t *cl)
 void queue_remove(int uid)
 {
     pthread_mutex_lock(&clients_mutex);
-
     for (int i = 0; i < MAX_CLIENTS; ++i)
     {
         if (clients[i])
@@ -162,10 +161,10 @@ void send_message(char *mess, int uid)
 {
     pthread_mutex_lock(&clients_mutex);
     int isPrivate = 0;
-    if (check_is_private(mess) == 1)
-    {
-        isPrivate = 1;
-    }
+    // if (check_is_private(mess) == 1)
+    // {
+    //     isPrivate = 1;
+    // }
     if (isPrivate)
     {
         int i;
