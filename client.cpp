@@ -120,14 +120,14 @@ void *send_msg_handler(void *arg)
             // }
             // else
             // {
-            string out;
-            payload.SerializeToString(&out);
+            char *out;
+            payload.SerializeToString(out);
             printf("OUT %s\n", out);
             sprintf(buffer, "%s", out);
             // }
 
             send(sockfd, buffer, strlen(buffer), 0);
-            bzero(&out, strlen(&out));
+            bzero(out, strlen(out));
         }
 
         bzero(message, LENGTH);
