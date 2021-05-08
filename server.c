@@ -165,9 +165,10 @@ void send_message(char *mess, int uid)
         {
             if (clients[i])
             {
+
                 if (strcmp(clients[i]->name, username) == 0)
                 {
-                    if (write(clients[i]->sockfd, mess, strlen(mess)) < 0)
+                    if (write(clients[i]->sockfd, &real_message, strlen(real_message)) < 0)
                     {
                         perror("ERROR: write to descriptor failed");
                         break;
