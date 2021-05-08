@@ -74,9 +74,9 @@ void *send_msg_handler(void *arg)
 
     while (1)
     {
-        str_overwrite_stdout();
-        fgets(message, LENGTH, stdin);
-        str_trim_lf(message, LENGTH);
+        // str_overwrite_stdout();
+        // fgets(message, LENGTH, stdin);
+        // str_trim_lf(message, LENGTH);
         printf("HERE1");
         Payload payload;
         printf("HERE2");
@@ -157,7 +157,7 @@ void *recv_msg_handler(void *arg)
         {
             // -1
         }
-        memset(message, 0, LENGTH);
+        memset(message, 0, sizeof(message));
     }
 }
 
