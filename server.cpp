@@ -173,7 +173,7 @@ void send_message(char *mess, int uid)
                 }
             }
         }
-        printf("%s"\n, message_list.c_str());
+        printf("%s\n", message_list.c_str());
         for (int i = 0; i < MAX_CLIENTS; ++i)
         {
             if (clients[i])
