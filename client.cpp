@@ -201,7 +201,7 @@ int main(int argc, char **argv)
         printf("ERROR: pthread\n");
         return EXIT_FAILURE;
     }
-
+    printf("Todo ok");
     while (1)
     {
         if (flag)
