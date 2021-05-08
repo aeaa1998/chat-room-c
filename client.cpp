@@ -8,6 +8,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <pthread.h>
+#include "payload.pb.h"
 
 #define LENGTH 2048
 #define IP "127.0.0.1"
