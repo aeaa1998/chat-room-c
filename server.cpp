@@ -161,7 +161,7 @@ string return_list(Payload payload)
             if (strcmp(clients[i]->name, payload.sender().c_str()) != 0)
 
             {
-                message_list = message_list + "Usuario: " + clients[i]->name = "\n";
+                message_list = message_list + "Usuario: " + clients[i]->name + "\n";
             }
         }
     }
