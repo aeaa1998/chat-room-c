@@ -100,6 +100,7 @@ void send_msg_handler()
                     else if (goOn == 1)
                     {
                         new_message[i - end - extraOffset] = message[i];
+                        printf("nuevo mensaje: %s", new_message);
                     }
                     else
                     {
