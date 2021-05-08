@@ -8,6 +8,12 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <pthread.h>
+#ifndef __cplusplus
+#include <stdatomic.h>
+#else
+#include <atomic>
+#define _Atomic(X) std::atomic<X>
+#endif
 
 #define LENGTH 2048
 #define IP "127.0.0.1"
