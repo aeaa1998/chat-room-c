@@ -56,10 +56,12 @@ int check_is_private(char message[])
     }
     if (strcmp(holder, "-p ") == 0)
     {
+        bzero(holder, LENGTH);
         return 1;
     }
     else
     {
+        bzero(holder, LENGTH);
         return -1;
     }
 }
@@ -107,8 +109,9 @@ void send_msg_handler()
                         extraOffset++;
                     }
                 }
-
                 sprintf(buffer, "-p %s %s (private) -> %s: %s\n", username, name, username, new_message);
+                bzero(new_message, LENGTH);
+                bzero(username, LENGTH);
             }
             else
             {
@@ -119,6 +122,7 @@ void send_msg_handler()
         }
 
         bzero(message, LENGTH);
+
         bzero(buffer, LENGTH + 32);
     }
     catch_ctrl_c_and_exit(2);
@@ -132,7 +136,7 @@ void recv_msg_handler()
         int receive = recv(sockfd, message, LENGTH, 0);
         if (receive > 0)
         {
-            printf("%s", message);
+            printf("%s \n", message);
             str_overwrite_stdout();
         }
         else if (receive == 0)

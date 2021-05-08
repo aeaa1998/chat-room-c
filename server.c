@@ -9,7 +9,7 @@
 #include <pthread.h>
 #include <sys/types.h>
 #include <signal.h>
-
+#define LENGTH 2048
 #define MAX_CLIENTS 100
 #define BUFFER_SZ 2048
 #define IP "127.0.0.1"
@@ -118,17 +118,19 @@ int check_is_private(char *message)
 {
     int i;
     int end = 2;
-    char holder[200] = {};
+    char holder[LENGTH] = {};
     for (i = 0; i < end; i++)
     {
         holder[i] = message[i];
     }
     if (strcmp(holder, "-p") == 0)
     {
+        bzero(holder, LENGTH);
         return 1;
     }
     else
     {
+        bzero(holder, LENGTH);
         return -1;
     }
 }
@@ -146,7 +148,7 @@ void send_message(char *mess, int uid)
     {
         int i;
         int counter = 0;
-        char username[300] = {};
+        char username[LENGTH] = {};
         for (i = 3; i < strlen(mess); i++)
         {
             if (mess[i] == ' ')
@@ -156,7 +158,7 @@ void send_message(char *mess, int uid)
             username[i - 3] = mess[i];
             counter++;
         }
-        char real_message[400] = {};
+        char real_message[LENGTH] = {};
         int last = 0;
         for (i = 0; i < strlen(mess) - counter - 3 - 1; i++)
         {
@@ -180,6 +182,8 @@ void send_message(char *mess, int uid)
                 }
             }
         }
+        bzero(real_message, LENGTH);
+        bzero(username, LENGTH);
         // strncpy(real_message, mess[2 + counter - 1], strlen(mess) - 2 + counter);
     }
     else
