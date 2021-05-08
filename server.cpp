@@ -161,26 +161,31 @@ void send_message(char *mess, int uid)
     if (payload.flag().compare("list") == 0)
     {
         string message_list = "Lista de mensajes para " + payload.sender() + "\n";
-        client_t *clientToSend;
         for (int i = 0; i < MAX_CLIENTS; ++i)
         {
             if (clients[i])
             {
-                if (strcmp(clients[i]->name, payload.sender().c_str()) == 0)
-                {
-                    clientToSend = clients[i];
-                }
-                else
+                if (strcmp(clients[i]->name, payload.sender().c_str()) != 0)
+
                 {
                     message_list = message_list + "Usuario: " + clients[i]->name = "\n";
                 }
             }
         }
-        if (write(clientToSend->sockfd, message_list.c_str(), strlen(message_list.c_str())) < 0)
+        for (int i = 0; i < MAX_CLIENTS; ++i)
         {
-            perror("ERROR: write to descriptor failed");
+            if (clients[i])
+            {
+                if (strcmp(clients[i]->name, payload.sender().c_str()) == 0)
+
+                {
+                    if (write(clients[i]->sockfd, message_list.c_str(), strlen(message_list.c_str())) < 0)
+                    {
+                        perror("ERROR: write to descriptor failed");
+                    }
+                }
+            }
         }
-        delete clientToSend;
     }
     else if (payload.flag().compare("info") == 0)
     {
