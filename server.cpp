@@ -121,7 +121,7 @@ client_t *return_client(int uid)
 
 void send_message_to_chat_group(Payload payload, int uid)
 {
-    string message_priv = payload.sender + ": " + payload.message;
+    string message_priv = payload.sender() + ": " + payload.message();
     for (int i = 0; i < MAX_CLIENTS; ++i)
     {
         if (clients[i])
@@ -170,13 +170,13 @@ void send_message(char *mess, int uid)
     // {
     //     isPrivate = 1;
     // }
-    if (payload.flag.compare("private") == 0)
+    if (payload.flag().compare("private") == 0)
     {
         for (int i = 0; i < MAX_CLIENTS; ++i)
         {
             if (clients[i])
             {
-                string message_priv = payload.sender + " (private): " + payload.message;
+                string message_priv = payload.sender() + " (private): " + payload.message();
                 if (strcmp(clients[i]->name, payload.extra.c_str()) == 0)
                 {
                     if (write(clients[i]->sockfd, message_priv.c_str(), strlen(message_priv.c_str())) < 0)
