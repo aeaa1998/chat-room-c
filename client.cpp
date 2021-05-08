@@ -50,7 +50,7 @@ void catch_ctrl_c_and_exit(int sig)
 int check_is_private(char message[])
 {
     int end = 3;
-    char holder[300] = {};
+    char holder[LENGTH] = {};
     for (int i = 0; i < end; i++)
     {
         holder[i] = message[i];
@@ -78,9 +78,8 @@ void *send_msg_handler(void *arg)
         fgets(message, LENGTH, stdin);
         str_trim_lf(message, LENGTH);
         Payload payload;
-        //payload.set_sender(&name);
-        payload.set_message(message);
-        payload.set_flag("message");
+        payload.set_sender(name);
+
         // payload->set_message(std::string s(message));
         if (strcmp(message, "exit") == 0)
         {
@@ -88,42 +87,50 @@ void *send_msg_handler(void *arg)
         }
         else
         {
-            // if (check_is_private(message) == 1)
-            // {
-            //     int i;
-            //     int offset = 0;
-            //     int end = offset + 3;
-            //     char new_message[LENGTH] = {};
-            //     char username[LENGTH] = {};
-            //     int goOn = 0;
-            //     int extraOffset = 0;
+            if (check_is_private(message) == 1)
+            {
 
-            //     for (i = end; i < strlen(message); i++)
-            //     {
-            //         if (message[i] == ' ' && goOn == 0)
-            //         {
-            //             goOn = 1;
-            //         }
-            //         else if (goOn == 1)
-            //         {
-            //             new_message[i - (end + extraOffset) - 1] = message[i];
-            //         }
-            //         else
-            //         {
-            //             username[i - end] = message[i];
-            //             extraOffset++;
-            //         }
-            //     }
-            //     sprintf(buffer, "-p %s %s (private) -> %s: %s\n", username, name, username, new_message);
-            //     bzero(new_message, LENGTH);
-            //     bzero(username, LENGTH);
-            // }
-            // else
-            // {
-            string out;
-            payload.SerializeToString(&out);
-            sprintf(buffer, "%s", out.c_str());
-            // }
+                payload.set_flag("private");
+                int i;
+                int offset = 0;
+                int end = offset + 3;
+                char new_message[LENGTH] = {};
+                char username[LENGTH] = {};
+                int goOn = 0;
+                int extraOffset = 0;
+
+                for (i = end; i < strlen(message); i++)
+                {
+                    if (message[i] == ' ' && goOn == 0)
+                    {
+                        goOn = 1;
+                    }
+                    else if (goOn == 1)
+                    {
+                        new_message[i - (end + extraOffset) - 1] = message[i];
+                    }
+                    else
+                    {
+                        username[i - end] = message[i];
+                        extraOffset++;
+                    }
+                }
+                payload.set_message(new_message);
+                payload.set_extra(username);
+                string out;
+                payload.SerializeToString(&out);
+                sprintf(buffer, "%s", out.c_str());
+                bzero(new_message, LENGTH);
+                bzero(username, LENGTH);
+            }
+            else
+            {
+                payload.set_message(message);
+                payload.set_flag("message");
+                string out;
+                payload.SerializeToString(&out);
+                sprintf(buffer, "%s", out.c_str());
+            }
 
             send(sockfd, buffer, strlen(buffer), 0);
         }

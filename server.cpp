@@ -5,10 +5,12 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
+#include <string>
 #include <string.h>
 #include <pthread.h>
 #include <sys/types.h>
 #include <signal.h>
+#include "payload.pb.h"
 
 #include <atomic>
 #define _Atomic(X) std::atomic<X>
@@ -117,15 +119,16 @@ client_t *return_client(int uid)
     }
 }
 
-void send_message_to_chat_group(char *message, int uid)
+void send_message_to_chat_group(Payload payload, int uid)
 {
+    string message_priv = payload.sender + ": " + payload.message;
     for (int i = 0; i < MAX_CLIENTS; ++i)
     {
         if (clients[i])
         {
             if (clients[i]->uid != uid)
             {
-                if (write(clients[i]->sockfd, message, strlen(message)) < 0)
+                if (write(clients[i]->sockfd, message_priv.c_str(), strlen(message_priv.c_str())) < 0)
                 {
                     perror("ERROR: write to descriptor failed");
                     break;
@@ -160,41 +163,23 @@ int check_is_private(char *message)
 void send_message(char *mess, int uid)
 {
     pthread_mutex_lock(&clients_mutex);
-    int isPrivate = 0;
+    string message(mess);
+    Payload payload;
+    payload.ParseFromString(message);
     // if (check_is_private(mess) == 1)
     // {
     //     isPrivate = 1;
     // }
-    if (isPrivate)
+    if (payload.flag.compare("private") == 0)
     {
-        int i;
-        int counter = 0;
-        char username[LENGTH] = {};
-        for (i = 3; i < strlen(mess); i++)
-        {
-            if (mess[i] == ' ')
-            {
-                break;
-            }
-            username[i - 3] = mess[i];
-            counter++;
-        }
-        char real_message[LENGTH] = {};
-        int last = 0;
-        for (i = 0; i < strlen(mess) - counter - 3 - 1; i++)
-        {
-            real_message[i] = mess[4 + counter + i];
-            last = 3 + counter + i;
-        }
-        real_message[last + 1] = '\n';
         for (int i = 0; i < MAX_CLIENTS; ++i)
         {
             if (clients[i])
             {
-
-                if (strcmp(clients[i]->name, username) == 0)
+                string message_priv = payload.sender + " (private): " + payload.message;
+                if (strcmp(clients[i]->name, payload.extra.c_str()) == 0)
                 {
-                    if (write(clients[i]->sockfd, real_message, strlen(real_message)) < 0)
+                    if (write(clients[i]->sockfd, message_priv.c_str(), strlen(message_priv.c_str())) < 0)
                     {
                         perror("ERROR: write to descriptor failed");
                         break;
@@ -203,13 +188,11 @@ void send_message(char *mess, int uid)
                 }
             }
         }
-        bzero(real_message, LENGTH);
-        bzero(username, LENGTH);
         // strncpy(real_message, mess[2 + counter - 1], strlen(mess) - 2 + counter);
     }
     else
     {
-        send_message_to_chat_group(mess, uid);
+        send_message_to_chat_group(payload, uid);
     }
 
     pthread_mutex_unlock(&clients_mutex);
@@ -359,7 +342,7 @@ int main(int argc, char **argv)
         pthread_create(&tid, NULL, &handle_client, (void *)cli);
 
         /* Reduce CPU usage */
-        // sleep(1);
+        sleep(1);
     }
 
     return EXIT_SUCCESS;
