@@ -70,7 +70,7 @@ int check_is_private(char message[])
 void *send_msg_handler(void *arg)
 {
     char message[LENGTH] = {};
-    char buffer[LENGTH + 32] = {};
+    char buffer[LENGTH + 32];
 
     while (1)
     {
@@ -122,8 +122,7 @@ void *send_msg_handler(void *arg)
             // {
             string out;
             payload.SerializeToString(&out);
-            printf("OUT %s\n", message);
-            sprintf(buffer, "%s", out);
+            sprintf(buffer, "%s", out.c_str());
             // }
 
             send(sockfd, buffer, strlen(buffer), 0);
