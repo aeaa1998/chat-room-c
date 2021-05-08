@@ -74,6 +74,7 @@ void *send_msg_handler(void *arg)
 
     while (1)
     {
+        printf("HERE1");
         str_overwrite_stdout();
         fgets(message, LENGTH, stdin);
         str_trim_lf(message, LENGTH);
