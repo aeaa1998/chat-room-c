@@ -359,7 +359,7 @@ int main(int argc, char **argv)
         pthread_create(&tid, NULL, &handle_client, (void *)cli);
 
         /* Reduce CPU usage */
-        sleep(1);
+        // sleep(1);
     }
 
     return EXIT_SUCCESS;
