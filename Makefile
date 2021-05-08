@@ -1,3 +1,9 @@
-compile:
-	gcc -Wall -g3 -fsanitize=address -pthread server.c -o server
-	gcc -Wall -g3 -fsanitize=address -pthread client.c -o client
+all: serv client
+
+server: server.cpp payload.pb.cc
+	g++ -o server server.cpp mensaje.pb.cc -lpthread -lprotobuf
+client: client.cpp payload.pb.cc
+	g++ -o server server.cpp mensaje.pb.cc -lpthread -lprotobuf
+	g++ -o client client.cpp mensaje.pb.cc -lpthread -lprotobuf
+payload.pb.cc: payload.proto
+	protoc -I=. --cpp_output=. payload.proto

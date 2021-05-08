@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+message Payload {
+  string sender = 1;
+  string message = 2;
+  string flag = 3;
+  string extra = 4;
+}
