@@ -180,7 +180,6 @@ void send_message(char *mess, int uid)
         if (write(clientToSend.sockfd, message_priv.c_str(), strlen(message_list.c_str())) < 0)
         {
             perror("ERROR: write to descriptor failed");
-            break;
         }
         break;
     }
@@ -211,7 +210,6 @@ void send_message(char *mess, int uid)
         if (write(clientToSend.sockfd, info_of_user.c_str(), strlen(info_of_user.c_str())) < 0)
         {
             perror("ERROR: write to descriptor failed");
-            break;
         }
     }
     else if (payload.flag().compare("private") == 0)
