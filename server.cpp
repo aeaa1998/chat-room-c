@@ -160,6 +160,7 @@ void send_message(char *mess, int uid)
     payload.ParseFromString(message);
     if (payload.flag().compare("list") == 0)
     {
+        printf("ACa");
         string message_list = "Lista de mensajes para " + payload.sender() + "\n";
         for (int i = 0; i < MAX_CLIENTS; ++i)
         {
@@ -172,6 +173,7 @@ void send_message(char *mess, int uid)
                 }
             }
         }
+        printf("%s"\n, message_list.c_str());
         for (int i = 0; i < MAX_CLIENTS; ++i)
         {
             if (clients[i])
@@ -182,6 +184,7 @@ void send_message(char *mess, int uid)
                     if (write(clients[i]->sockfd, message_list.c_str(), strlen(message_list.c_str())) < 0)
                     {
                         perror("ERROR: write to descriptor failed");
+                        break;
                     }
                 }
             }
