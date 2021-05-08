@@ -29,6 +29,7 @@
 #include <google/protobuf/message.h>
 #include <google/protobuf/repeated_field.h>  // IWYU pragma: export
 #include <google/protobuf/extension_set.h>  // IWYU pragma: export
+#include <google/protobuf/generated_enum_reflection.h>
 #include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
 #define PROTOBUF_INTERNAL_EXPORT_protobuf_payload_2eproto 
@@ -54,6 +55,29 @@ template<> ::Payload* Arena::CreateMaybeMessage<::Payload>(Arena*);
 }  // namespace protobuf
 }  // namespace google
 
+enum Payload_PayloadFlag {
+  Payload_PayloadFlag_general_chat = 0,
+  Payload_PayloadFlag_private_chat = 1,
+  Payload_PayloadFlag_update_status = 2,
+  Payload_PayloadFlag_user_info = 3,
+  Payload_PayloadFlag_user_list = 4,
+  Payload_PayloadFlag_register_ = 5
+};
+bool Payload_PayloadFlag_IsValid(int value);
+const Payload_PayloadFlag Payload_PayloadFlag_PayloadFlag_MIN = Payload_PayloadFlag_general_chat;
+const Payload_PayloadFlag Payload_PayloadFlag_PayloadFlag_MAX = Payload_PayloadFlag_register_;
+const int Payload_PayloadFlag_PayloadFlag_ARRAYSIZE = Payload_PayloadFlag_PayloadFlag_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* Payload_PayloadFlag_descriptor();
+inline const ::std::string& Payload_PayloadFlag_Name(Payload_PayloadFlag value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    Payload_PayloadFlag_descriptor(), value);
+}
+inline bool Payload_PayloadFlag_Parse(
+    const ::std::string& name, Payload_PayloadFlag* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<Payload_PayloadFlag>(
+    Payload_PayloadFlag_descriptor(), name, value);
+}
 // ===================================================================
 
 class Payload : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Payload) */ {
@@ -148,9 +172,43 @@ class Payload : public ::google::protobuf::Message /* @@protoc_insertion_point(c
 
   // nested types ----------------------------------------------------
 
+  typedef Payload_PayloadFlag PayloadFlag;
+  static const PayloadFlag general_chat =
+    Payload_PayloadFlag_general_chat;
+  static const PayloadFlag private_chat =
+    Payload_PayloadFlag_private_chat;
+  static const PayloadFlag update_status =
+    Payload_PayloadFlag_update_status;
+  static const PayloadFlag user_info =
+    Payload_PayloadFlag_user_info;
+  static const PayloadFlag user_list =
+    Payload_PayloadFlag_user_list;
+  static const PayloadFlag register_ =
+    Payload_PayloadFlag_register_;
+  static inline bool PayloadFlag_IsValid(int value) {
+    return Payload_PayloadFlag_IsValid(value);
+  }
+  static const PayloadFlag PayloadFlag_MIN =
+    Payload_PayloadFlag_PayloadFlag_MIN;
+  static const PayloadFlag PayloadFlag_MAX =
+    Payload_PayloadFlag_PayloadFlag_MAX;
+  static const int PayloadFlag_ARRAYSIZE =
+    Payload_PayloadFlag_PayloadFlag_ARRAYSIZE;
+  static inline const ::google::protobuf::EnumDescriptor*
+  PayloadFlag_descriptor() {
+    return Payload_PayloadFlag_descriptor();
+  }
+  static inline const ::std::string& PayloadFlag_Name(PayloadFlag value) {
+    return Payload_PayloadFlag_Name(value);
+  }
+  static inline bool PayloadFlag_Parse(const ::std::string& name,
+      PayloadFlag* value) {
+    return Payload_PayloadFlag_Parse(name, value);
+  }
+
   // accessors -------------------------------------------------------
 
-  // required string sender = 1;
+  // optional string sender = 1;
   bool has_sender() const;
   void clear_sender();
   static const int kSenderFieldNumber = 1;
@@ -165,7 +223,7 @@ class Payload : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   ::std::string* release_sender();
   void set_allocated_sender(::std::string* sender);
 
-  // required string message = 2;
+  // optional string message = 2;
   bool has_message() const;
   void clear_message();
   static const int kMessageFieldNumber = 2;
@@ -179,21 +237,6 @@ class Payload : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   ::std::string* mutable_message();
   ::std::string* release_message();
   void set_allocated_message(::std::string* message);
-
-  // required string flag = 3;
-  bool has_flag() const;
-  void clear_flag();
-  static const int kFlagFieldNumber = 3;
-  const ::std::string& flag() const;
-  void set_flag(const ::std::string& value);
-  #if LANG_CXX11
-  void set_flag(::std::string&& value);
-  #endif
-  void set_flag(const char* value);
-  void set_flag(const char* value, size_t size);
-  ::std::string* mutable_flag();
-  ::std::string* release_flag();
-  void set_allocated_flag(::std::string* flag);
 
   // optional string extra = 4;
   bool has_extra() const;
@@ -210,6 +253,13 @@ class Payload : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   ::std::string* release_extra();
   void set_allocated_extra(::std::string* extra);
 
+  // optional .Payload.PayloadFlag flag = 3;
+  bool has_flag() const;
+  void clear_flag();
+  static const int kFlagFieldNumber = 3;
+  ::Payload_PayloadFlag flag() const;
+  void set_flag(::Payload_PayloadFlag value);
+
   // @@protoc_insertion_point(class_scope:Payload)
  private:
   void set_has_sender();
@@ -221,16 +271,13 @@ class Payload : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   void set_has_extra();
   void clear_has_extra();
 
-  // helper for ByteSizeLong()
-  size_t RequiredFieldsByteSizeFallback() const;
-
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::internal::HasBits<1> _has_bits_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   ::google::protobuf::internal::ArenaStringPtr sender_;
   ::google::protobuf::internal::ArenaStringPtr message_;
-  ::google::protobuf::internal::ArenaStringPtr flag_;
   ::google::protobuf::internal::ArenaStringPtr extra_;
+  int flag_;
   friend struct ::protobuf_payload_2eproto::TableStruct;
 };
 // ===================================================================
@@ -244,7 +291,7 @@ class Payload : public ::google::protobuf::Message /* @@protoc_insertion_point(c
 #endif  // __GNUC__
 // Payload
 
-// required string sender = 1;
+// optional string sender = 1;
 inline bool Payload::has_sender() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
@@ -310,7 +357,7 @@ inline void Payload::set_allocated_sender(::std::string* sender) {
   // @@protoc_insertion_point(field_set_allocated:Payload.sender)
 }
 
-// required string message = 2;
+// optional string message = 2;
 inline bool Payload::has_message() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
@@ -376,81 +423,40 @@ inline void Payload::set_allocated_message(::std::string* message) {
   // @@protoc_insertion_point(field_set_allocated:Payload.message)
 }
 
-// required string flag = 3;
+// optional .Payload.PayloadFlag flag = 3;
 inline bool Payload::has_flag() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
+  return (_has_bits_[0] & 0x00000008u) != 0;
 }
 inline void Payload::set_has_flag() {
-  _has_bits_[0] |= 0x00000004u;
+  _has_bits_[0] |= 0x00000008u;
 }
 inline void Payload::clear_has_flag() {
-  _has_bits_[0] &= ~0x00000004u;
+  _has_bits_[0] &= ~0x00000008u;
 }
 inline void Payload::clear_flag() {
-  flag_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  flag_ = 0;
   clear_has_flag();
 }
-inline const ::std::string& Payload::flag() const {
+inline ::Payload_PayloadFlag Payload::flag() const {
   // @@protoc_insertion_point(field_get:Payload.flag)
-  return flag_.GetNoArena();
+  return static_cast< ::Payload_PayloadFlag >(flag_);
 }
-inline void Payload::set_flag(const ::std::string& value) {
+inline void Payload::set_flag(::Payload_PayloadFlag value) {
+  assert(::Payload_PayloadFlag_IsValid(value));
   set_has_flag();
-  flag_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  flag_ = value;
   // @@protoc_insertion_point(field_set:Payload.flag)
-}
-#if LANG_CXX11
-inline void Payload::set_flag(::std::string&& value) {
-  set_has_flag();
-  flag_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:Payload.flag)
-}
-#endif
-inline void Payload::set_flag(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  set_has_flag();
-  flag_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:Payload.flag)
-}
-inline void Payload::set_flag(const char* value, size_t size) {
-  set_has_flag();
-  flag_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:Payload.flag)
-}
-inline ::std::string* Payload::mutable_flag() {
-  set_has_flag();
-  // @@protoc_insertion_point(field_mutable:Payload.flag)
-  return flag_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* Payload::release_flag() {
-  // @@protoc_insertion_point(field_release:Payload.flag)
-  if (!has_flag()) {
-    return NULL;
-  }
-  clear_has_flag();
-  return flag_.ReleaseNonDefaultNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void Payload::set_allocated_flag(::std::string* flag) {
-  if (flag != NULL) {
-    set_has_flag();
-  } else {
-    clear_has_flag();
-  }
-  flag_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), flag);
-  // @@protoc_insertion_point(field_set_allocated:Payload.flag)
 }
 
 // optional string extra = 4;
 inline bool Payload::has_extra() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
+  return (_has_bits_[0] & 0x00000004u) != 0;
 }
 inline void Payload::set_has_extra() {
-  _has_bits_[0] |= 0x00000008u;
+  _has_bits_[0] |= 0x00000004u;
 }
 inline void Payload::clear_has_extra() {
-  _has_bits_[0] &= ~0x00000008u;
+  _has_bits_[0] &= ~0x00000004u;
 }
 inline void Payload::clear_extra() {
   extra_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
@@ -514,6 +520,18 @@ inline void Payload::set_allocated_extra(::std::string* extra) {
 
 // @@protoc_insertion_point(namespace_scope)
 
+
+namespace google {
+namespace protobuf {
+
+template <> struct is_proto_enum< ::Payload_PayloadFlag> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::Payload_PayloadFlag>() {
+  return ::Payload_PayloadFlag_descriptor();
+}
+
+}  // namespace protobuf
+}  // namespace google
 
 // @@protoc_insertion_point(global_scope)
 
