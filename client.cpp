@@ -67,6 +67,44 @@ int check_is_private(char message[])
     }
 }
 
+int check_is_status(char message[])
+{
+    int counter = 0;
+    int end = 3;
+    char holder[LENGTH] = {};
+    for (int i = 0; i < end; i++)
+    {
+        holder[i] = message[i];
+    }
+    if (strcmp(holder, "-s ") == 0)
+    {
+        bzero(holder, LENGTH);
+    }
+    else
+    {
+        bzero(holder, LENGTH);
+        return -1;
+    }
+    if (strlen(message) > 4)
+    {
+        return -1;
+    }
+
+    if (message[3] == '1')
+    {
+        return 1;
+    }
+    else if (message[3] == '2')
+    {
+        return 2;
+    }
+    else if (message[3] == '3')
+    {
+        return 3;
+    }
+    return -1;
+}
+
 void *send_msg_handler(void *arg)
 {
     char message[LENGTH] = {};
@@ -122,6 +160,27 @@ void *send_msg_handler(void *arg)
                 sprintf(buffer, "%s", out.c_str());
                 bzero(new_message, LENGTH);
                 bzero(username, LENGTH);
+            }
+            else if (check_is_status(message) > -1)
+            {
+                int status = check_is_status(message);
+                if (status == 1)
+                {
+                    payload.set_message("1");
+                }
+                else if (status == 2)
+                {
+                    payload.set_message("2");
+                }
+                else
+                {
+                    payload.set_message("3");
+                }
+
+                payload.set_flag("status");
+                string out;
+                payload.SerializeToString(&out);
+                sprintf(buffer, "%s", out.c_str());
             }
             else
             {

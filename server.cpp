@@ -138,25 +138,17 @@ void send_message_to_chat_group(Payload payload, int uid)
     }
 }
 
-int check_is_private(char *message)
+string getStatusString(int code)
 {
-    int i;
-    int end = 2;
-    char holder[LENGTH] = {};
-    for (i = 0; i < end; i++)
+    if (code == 1)
     {
-        holder[i] = message[i];
+        return "ACTIVO";
     }
-    if (strcmp(holder, "-p") == 0)
+    else if (code == 2)
     {
-        bzero(holder, LENGTH);
-        return 1;
+        return "OCUPADO";
     }
-    else
-    {
-        bzero(holder, LENGTH);
-        return -1;
-    }
+    return "INACTIVO";
 }
 
 /* Manages what message to send private or not */
@@ -166,10 +158,7 @@ void send_message(char *mess, int uid)
     string message(mess);
     Payload payload;
     payload.ParseFromString(message);
-    // if (check_is_private(mess) == 1)
-    // {
-    //     isPrivate = 1;
-    // }
+
     if (payload.flag().compare("private") == 0)
     {
         for (int i = 0; i < MAX_CLIENTS; ++i)
@@ -188,7 +177,40 @@ void send_message(char *mess, int uid)
                 }
             }
         }
-        // strncpy(real_message, mess[2 + counter - 1], strlen(mess) - 2 + counter);
+    }
+    else if (payload.flag().compare("status") == 0)
+    {
+        int new_status;
+        if (payload.message().compare("1") == 0)
+        {
+            new_status = ACTIVO;
+        }
+        else if (payload.message().compare("2") == 0)
+        {
+            new_status = OCUPADO;
+        }
+        else
+        {
+            new_status = INACTIVO;
+        }
+        for (int i = 0; i < MAX_CLIENTS; ++i)
+        {
+            if (clients[i])
+            {
+
+                if (strcmp(clients[i]->name, payload.sender().c_str()) == 0)
+                {
+                    string message_update_status = "Status actualizado " + getStatusString(clients[i]->status) + " -> " + getStatusString(new_status);
+                    clients[i]->status = new_status;
+                    if (write(clients[i]->sockfd, message_update_status.c_str(), strlen(message_update_status.c_str())) < 0)
+                    {
+                        perror("ERROR: write to descriptor failed");
+                        break;
+                    }
+                    break;
+                }
+            }
+        }
     }
     else
     {
