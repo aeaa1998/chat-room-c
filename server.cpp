@@ -204,8 +204,9 @@ void send_message(char *mess, int uid)
         }
         string username(clientToGetInfo.name);
         string uuid_s(clientToGetInfo.uid);
-        string address(inet_ntop(clientToGetInfo.address.sin_addr.s_addr));
-
+        char address_arr[LENGTH];
+        inet_ntop(AF_INET, &clientToGetInfo.address.sin_addr, address_arr, LENGTH);
+        string address(address_arr);
         string info_of_user = "Usuario: " + username + "\n" + "Status: " + getStatusString(clientToGetInfo.status) + "\nCodigo unico: " + uuid_s + "\nIp asociada: " + address;
         if (write(clientToSend.sockfd, info_of_user.c_str(), strlen(info_of_user.c_str())) < 0)
         {
