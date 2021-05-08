@@ -79,7 +79,7 @@ void *send_msg_handler(void *arg)
         str_trim_lf(message, LENGTH);
         Payload payload;
         //payload.set_sender(&name);
-        // payload.set_message(&message);
+        payload.set_message(message);
         payload.set_flag("message");
         // payload->set_message(std::string s(message));
         if (strcmp(message, "exit") == 0)
