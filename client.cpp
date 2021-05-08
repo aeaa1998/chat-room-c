@@ -50,9 +50,8 @@ void catch_ctrl_c_and_exit(int sig)
 void *send_msg_handler(void *arg)
 {
     string message;
-
-    char buffer[LENGTH + 32] = {};
     cout << "What's your name? ";
+    char buffer[LENGTH + 32] = {};
 
     while (1)
     {
@@ -110,8 +109,6 @@ void *send_msg_handler(void *arg)
 
             send(sockfd, buffer, strlen(buffer), 0);
         }
-
-        bzero(message, LENGTH);
 
         bzero(buffer, LENGTH + 32);
     }
