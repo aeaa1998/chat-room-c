@@ -134,7 +134,9 @@ void *recv_msg_handler(void *arg)
         {
             // -1
         }
+        printf("Here");
         memset(message, 0, sizeof(message));
+        printf("Here2");
     }
 }
 
