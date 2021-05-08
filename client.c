@@ -95,19 +95,14 @@ void send_msg_handler()
                 {
                     if (message[i] == ' ' && goOn == 0)
                     {
-                        printf("gogo\n");
                         goOn = 1;
                     }
                     else if (goOn == 1)
                     {
-                        new_message[i - (end + extraOffset)] = message[i];
-                        printf("pos %d \n", i - (end + extraOffset));
-                        printf("nuevo mensaje: %s \n", new_message);
-                        printf("nuevo mensaje: %c \n", message[i]);
+                        new_message[i - (end + extraOffset) - 1] = message[i];
                     }
                     else
                     {
-                        printf("Aca username\n");
                         username[i - end] = message[i];
                         extraOffset++;
                     }
