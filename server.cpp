@@ -21,8 +21,8 @@
 #define OCUPADO 2
 #define INACTIVO 3
 
-static _Atomic unsigned int cli_count = 0;
-static int uid = 10;
+std::atomic<long> cli_count(0);
+int uid = 10;
 
 /* Client structure */
 typedef struct
