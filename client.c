@@ -95,6 +95,7 @@ void send_msg_handler()
                 {
                     if (message[i] == ' ' && goOn == 0)
                     {
+                        printf("gogo");
                         goOn = 1;
                     }
                     else if (goOn == 1)
@@ -104,6 +105,7 @@ void send_msg_handler()
                     }
                     else
                     {
+                        printf("Aca username");
                         username[i - end] = message[i];
                         extraOffset++;
                     }
