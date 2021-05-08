@@ -9,12 +9,9 @@
 #include <pthread.h>
 #include <sys/types.h>
 #include <signal.h>
-#ifndef __cplusplus
-#include <stdatomic.h>
-#else
+
 #include <atomic>
 #define _Atomic(X) std::atomic<X>
-#endif
 
 #define LENGTH 2048
 #define MAX_CLIENTS 100
