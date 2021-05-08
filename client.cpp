@@ -1,6 +1,6 @@
 #include <iostream>
+#include <string>
 #include <stdlib.h>
-#include <string.h>
 #include <signal.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -47,37 +47,16 @@ void catch_ctrl_c_and_exit(int sig)
     flag = 1;
 }
 
-int check_is_private(char message[])
-{
-    int end = 3;
-    char holder[300] = {};
-    for (int i = 0; i < end; i++)
-    {
-        holder[i] = message[i];
-    }
-    if (strcmp(holder, "-p ") == 0)
-    {
-        bzero(holder, LENGTH);
-        return 1;
-    }
-    else
-    {
-        bzero(holder, LENGTH);
-        return -1;
-    }
-}
-
 void *send_msg_handler(void *arg)
 {
-    char message[LENGTH] = {};
+    string message;
+
     char buffer[LENGTH + 32] = {};
+    cout << "What's your name? ";
 
     while (1)
     {
-        printf("HERE1");
-        str_overwrite_stdout();
-        fgets(message, LENGTH, stdin);
-        str_trim_lf(message, LENGTH);
+        getline(cin, message);
         printf("HERE1");
         Payload payload;
         printf("HERE2");
