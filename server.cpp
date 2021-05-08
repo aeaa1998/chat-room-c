@@ -177,7 +177,7 @@ void send_message(char *mess, int uid)
             if (clients[i])
             {
                 string message_priv = payload.sender() + " (private): " + payload.message();
-                if (strcmp(clients[i]->name, payload.extra.c_str()) == 0)
+                if (strcmp(clients[i]->name, payload.extra().c_str()) == 0)
                 {
                     if (write(clients[i]->sockfd, message_priv.c_str(), strlen(message_priv.c_str())) < 0)
                     {
