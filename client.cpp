@@ -127,7 +127,7 @@ void *send_msg_handler(void *arg)
             // }
 
             send(sockfd, buffer, strlen(buffer), 0);
-            bzero(&out);
+            bzero(&out, strlen(out));
         }
 
         bzero(message, LENGTH);
