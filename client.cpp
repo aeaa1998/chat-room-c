@@ -122,12 +122,11 @@ void *send_msg_handler(void *arg)
             // {
             string out;
             payload.SerializeToString(&out);
-            printf("OUT %s\n", out);
+            printf("OUT %s\n", message);
             sprintf(buffer, "%s", out);
             // }
 
             send(sockfd, buffer, strlen(buffer), 0);
-            cout << out << endl;
         }
 
         bzero(message, LENGTH);
