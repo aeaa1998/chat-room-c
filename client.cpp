@@ -122,6 +122,7 @@ void *send_msg_handler(void *arg)
             // {
             string out;
             payload.SerializeToString(&out);
+            printf("OUT %s\n", out);
             sprintf(buffer, "%s", out);
             // }
 
