@@ -202,7 +202,7 @@ void send_message(char *mess, int uid)
             }
         }
         string username(clientToGetInfo->name);
-        string uuid_s(clientToGetInfo->uid);
+        string uuid_s = to_string(clientToGetInfo->uid);
         char address_arr[LENGTH];
         inet_ntop(AF_INET, &clientToGetInfo->address.sin_addr, address_arr, LENGTH);
         string address(address_arr);
