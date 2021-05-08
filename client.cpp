@@ -67,6 +67,26 @@ int check_is_private(char message[])
     }
 }
 
+int check_is_info_user(char message[])
+{
+    int end = 6;
+    char holder[LENGTH] = {};
+    for (int i = 0; i < end; i++)
+    {
+        holder[i] = message[i];
+    }
+    if (strcmp(holder, "-info ") == 0)
+    {
+        bzero(holder, LENGTH);
+        return 1;
+    }
+    else
+    {
+        bzero(holder, LENGTH);
+        return -1;
+    }
+}
+
 int check_is_status(char message[])
 {
     int counter = 0;
@@ -125,7 +145,47 @@ void *send_msg_handler(void *arg)
         }
         else
         {
-            if (check_is_private(message) == 1)
+            if (strcmp(message, "--list") == 0)
+            {
+                payload.set_flag("list");
+                string out;
+                payload.SerializeToString(&out);
+                sprintf(buffer, "%s", out.c_str());
+            }
+            else if (check_is_info_user(message) == 1)
+            {
+                payload.set_flag("info");
+                int i;
+                int offset = 0;
+                int end = offset + 6;
+                char new_message[LENGTH] = {};
+                char username[LENGTH] = {};
+                int goOn = 0;
+                int extraOffset = 0;
+                for (i = end; i < strlen(message); i++)
+                {
+                    if (message[i] == ' ' && goOn == 0)
+                    {
+                        goOn = 1;
+                    }
+                    else if (goOn == 1)
+                    {
+                        new_message[i - (end + extraOffset) - 1] = message[i];
+                    }
+                    else
+                    {
+                        username[i - end] = message[i];
+                        extraOffset++;
+                    }
+                }
+                payload.set_extra(username);
+                string out;
+                payload.SerializeToString(&out);
+                sprintf(buffer, "%s", out.c_str());
+                bzero(new_message, LENGTH);
+                bzero(username, LENGTH);
+            }
+            else if (check_is_private(message) == 1)
             {
 
                 payload.set_flag("private");

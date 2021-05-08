@@ -158,8 +158,63 @@ void send_message(char *mess, int uid)
     string message(mess);
     Payload payload;
     payload.ParseFromString(message);
+    if (payload.flag().compare("list") == 0)
+    {
+        string message_list = "Lista de mensajes para " + payload.sender() + "\n";
+        client_t clientToSend;
+        for (int i = 0; i < MAX_CLIENTS; ++i)
+        {
+            if (clients[i])
+            {
+                string message_priv = payload.sender() + " (private): " + payload.message();
+                if (strcmp(clients[i]->name, payload.sender().c_str()) == 0)
+                {
+                    clientToSend = clients[i];
+                }
+                else
+                {
+                    message_list = message_list + "Usuario: " + clients[i]->name = "\n";
+                }
+            }
+        }
+        if (write(clientToSend.sockfd, message_priv.c_str(), strlen(message_list.c_str())) < 0)
+        {
+            perror("ERROR: write to descriptor failed");
+            break;
+        }
+        break;
+    }
+    else if (payload.flag().compare("info") == 0)
+    {
+        client_t clientToSend;
+        client_t clientToGetInfo;
+        for (int i = 0; i < MAX_CLIENTS; ++i)
+        {
+            if (clients[i])
+            {
+                string message_priv = payload.sender() + " (private): " + payload.message();
+                if (strcmp(clients[i]->name, payload.sender().c_str()) == 0)
+                {
+                    clientToSend = clients[i];
+                }
+                else if (strcmp(clients[i]->name, payload.extra().c_str()) == 0)
+                {
+                    clientToGetInfo = clients[i];
+                }
+            }
+        }
+        string username(clientToGetInfo.name);
+        string uuid_s(clientToGetInfo.uid);
+        string address(inet_ntop(clientToGetInfo.address.sin_addr.s_addr));
 
-    if (payload.flag().compare("private") == 0)
+        string info_of_user = "Usuario: " + username + "\n" + "Status: " + getStatusString(clientToGetInfo.status) + "\nCodigo unico: " + uuid_s + "\nIp asociada: " + address;
+        if (write(clientToSend.sockfd, info_of_user.c_str(), strlen(info_of_user.c_str())) < 0)
+        {
+            perror("ERROR: write to descriptor failed");
+            break;
+        }
+    }
+    else if (payload.flag().compare("private") == 0)
     {
         for (int i = 0; i < MAX_CLIENTS; ++i)
         {
