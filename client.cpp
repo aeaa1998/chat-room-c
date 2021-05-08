@@ -121,6 +121,7 @@ void *send_msg_handler(void *arg)
             // }
             // else
             // {
+            printf("HERE");
             string out;
             payload.SerializeToString(&out);
             sprintf(buffer, "%s", out);
