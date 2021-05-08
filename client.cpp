@@ -66,7 +66,7 @@ int check_is_private(char message[])
     }
 }
 
-void send_msg_handler()
+void *send_msg_handler()
 {
     char message[LENGTH] = {};
     char buffer[LENGTH + 32] = {};
@@ -128,7 +128,7 @@ void send_msg_handler()
     catch_ctrl_c_and_exit(2);
 }
 
-void recv_msg_handler()
+void *recv_msg_handler()
 {
     char message[LENGTH] = {};
     while (1)
@@ -199,14 +199,14 @@ int main(int argc, char **argv)
     printf("=== WELCOME TO THE CHATROOM ===\n");
 
     pthread_t send_msg_thread;
-    if (pthread_create(&send_msg_thread, NULL, (void *)send_msg_handler, NULL) != 0)
+    if (pthread_create(&send_msg_thread, NULL, send_msg_handler, NULL) != 0)
     {
         printf("ERROR: pthread\n");
         return EXIT_FAILURE;
     }
 
     pthread_t recv_msg_thread;
-    if (pthread_create(&recv_msg_thread, NULL, (void *)recv_msg_handler, NULL) != 0)
+    if (pthread_create(&recv_msg_thread, NULL, recv_msg_handler, NULL) != 0)
     {
         printf("ERROR: pthread\n");
         return EXIT_FAILURE;
