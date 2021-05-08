@@ -1,6 +1,6 @@
 #include <iostream>
-#include <string>
 #include <stdlib.h>
+#include <string.h>
 #include <signal.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -26,9 +26,7 @@ char name[32];
 void str_overwrite_stdout()
 {
     printf("%s", "> ");
-    printf("ACa freh");
     fflush(stdout);
-    printf("Aca nel");
 }
 
 void str_trim_lf(char *arr, int length)
@@ -49,15 +47,36 @@ void catch_ctrl_c_and_exit(int sig)
     flag = 1;
 }
 
+int check_is_private(char message[])
+{
+    int end = 3;
+    char holder[300] = {};
+    for (int i = 0; i < end; i++)
+    {
+        holder[i] = message[i];
+    }
+    if (strcmp(holder, "-p ") == 0)
+    {
+        bzero(holder, LENGTH);
+        return 1;
+    }
+    else
+    {
+        bzero(holder, LENGTH);
+        return -1;
+    }
+}
+
 void *send_msg_handler(void *arg)
 {
-    string message;
-    cout << "What's your name? ";
+    char message[LENGTH] = {};
     char buffer[LENGTH + 32] = {};
 
     while (1)
     {
-        getline(cin, message);
+        str_overwrite_stdout();
+        fgets(message, LENGTH, stdin);
+        str_trim_lf(message, LENGTH);
         printf("HERE1");
         Payload payload;
         printf("HERE2");
@@ -112,6 +131,8 @@ void *send_msg_handler(void *arg)
             send(sockfd, buffer, strlen(buffer), 0);
         }
 
+        bzero(message, LENGTH);
+
         bzero(buffer, LENGTH + 32);
     }
     catch_ctrl_c_and_exit(2);
@@ -119,7 +140,7 @@ void *send_msg_handler(void *arg)
 
 void *recv_msg_handler(void *arg)
 {
-    char message[LENGTH];
+    char message[LENGTH] = {};
     while (1)
     {
         int receive = recv(sockfd, message, LENGTH, 0);
@@ -136,7 +157,7 @@ void *recv_msg_handler(void *arg)
         {
             // -1
         }
-        memset(message, 0, sizeof(message));
+        memset(message, 0, LENGTH);
     }
 }
 
@@ -200,7 +221,7 @@ int main(int argc, char **argv)
         printf("ERROR: pthread\n");
         return EXIT_FAILURE;
     }
-    printf("Todo ok");
+
     while (1)
     {
         if (flag)
