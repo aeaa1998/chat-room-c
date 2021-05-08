@@ -117,7 +117,7 @@ void *send_msg_handler(void *arg)
 
 void *recv_msg_handler(void *arg)
 {
-    char message[LENGTH] = {};
+    char message[LENGTH];
     while (1)
     {
         int receive = recv(sockfd, message, LENGTH, 0);
