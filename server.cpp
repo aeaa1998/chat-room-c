@@ -166,7 +166,6 @@ void send_message(char *mess, int uid)
         {
             if (clients[i])
             {
-                string message_priv = payload.sender() + " (private): " + payload.message();
                 if (strcmp(clients[i]->name, payload.sender().c_str()) == 0)
                 {
                     clientToSend = clients[i];
@@ -177,11 +176,10 @@ void send_message(char *mess, int uid)
                 }
             }
         }
-        if (write(clientToSend.sockfd, message_priv.c_str(), strlen(message_list.c_str())) < 0)
+        if (write(clientToSend.sockfd, message_list.c_str(), strlen(message_list.c_str())) < 0)
         {
             perror("ERROR: write to descriptor failed");
         }
-        break;
     }
     else if (payload.flag().compare("info") == 0)
     {
