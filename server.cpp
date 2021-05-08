@@ -118,6 +118,24 @@ client_t *return_client(int uid)
     }
 }
 
+void send_message_to_chat_group(char *message, int uid)
+{
+    for (int i = 0; i < MAX_CLIENTS; ++i)
+    {
+        if (clients[i])
+        {
+            if (clients[i]->uid != uid)
+            {
+                if (write(clients[i]->sockfd, message, strlen(message)) < 0)
+                {
+                    perror("ERROR: write to descriptor failed");
+                    break;
+                }
+            }
+        }
+    }
+}
+
 int check_is_private(char *message)
 {
     int i;
@@ -196,24 +214,6 @@ void send_message(char *mess, int uid)
     }
 
     pthread_mutex_unlock(&clients_mutex);
-}
-
-void send_message_to_chat_group(char *message, int uid)
-{
-    for (int i = 0; i < MAX_CLIENTS; ++i)
-    {
-        if (clients[i])
-        {
-            if (clients[i]->uid != uid)
-            {
-                if (write(clients[i]->sockfd, message, strlen(message)) < 0)
-                {
-                    perror("ERROR: write to descriptor failed");
-                    break;
-                }
-            }
-        }
-    }
 }
 
 /* Handle all communication with the client */
