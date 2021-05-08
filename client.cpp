@@ -81,7 +81,7 @@ void *send_msg_handler(void *arg)
         Payload payload;
         printf("HERE2");
         payload.set_sender(&name);
-        payload.set_message(&message);
+        // payload.set_message(&message);
         payload.set_flag("message");
         // payload->set_message(std::string s(message));
         if (strcmp(message, "exit") == 0)
