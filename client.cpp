@@ -26,7 +26,9 @@ char name[32];
 void str_overwrite_stdout()
 {
     printf("%s", "> ");
+    printf("ACa freh");
     fflush(stdout);
+    printf("Aca nel");
 }
 
 void str_trim_lf(char *arr, int length)
@@ -134,9 +136,7 @@ void *recv_msg_handler(void *arg)
         {
             // -1
         }
-        printf("Here");
         memset(message, 0, sizeof(message));
-        printf("Here2");
     }
 }
 
