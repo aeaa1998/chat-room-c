@@ -77,8 +77,9 @@ void *send_msg_handler(void *arg)
         str_overwrite_stdout();
         fgets(message, LENGTH, stdin);
         str_trim_lf(message, LENGTH);
+        printf("HERE1");
         Payload payload;
-
+        printf("HERE2");
         payload.set_sender(&name);
         payload.set_message(&message);
         payload.set_flag("message");
