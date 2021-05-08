@@ -147,7 +147,7 @@ void *recv_msg_handler(void *arg)
         if (receive > 0)
         {
             printf("%s \n", message);
-            str_overwrite_stdout();
+            // str_overwrite_stdout();
         }
         else if (receive == 0)
         {
