@@ -26,11 +26,16 @@ syntax = "proto2";
 
 // Caso del register
 // En sender ya estas mandando tu username
-// Message mandas tu ip y ya
-
+// En ip siempre va tu ip
+// Con este modelo tenes la facilidad de repetir siempre el llenar sender, ip y
+// flag y con eso Ya podes manejar incluso varios escenarios sin tener que tocar
+// mas el modelo y solo cuando es necesario complementas
 message Payload {
   optional string sender = 1;
-  optional string message = 2;
+  // Agregas tu ip para saber que siempre estas mandando los mensajes de un
+  // mismo origen
+  optional string ip = 2;
+  optional string message = 3;
   enum PayloadFlag {
     general_chat = 0;
     private_chat = 1;
@@ -39,6 +44,6 @@ message Payload {
     user_list = 4;
     register = 5;
   }
-  optional PayloadFlag flag = 3;
-  optional string extra = 4;
+  optional PayloadFlag flag = 4;
+  optional string extra = 5;
 }
