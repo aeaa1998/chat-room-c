@@ -276,14 +276,23 @@ void *recv_msg_handler(void *arg)
     char message[LENGTH] = {};
     while (1)
     {
-        int receive = recv(sockfd, message, LENGTH, 0);
-        if (receive > 0)
+        int received_message = recv(sockfd, message, LENGTH, 0);
+        if (received_message > 0)
         {
             Payload server_payload;
-            printf("%s \n", message);
+            server_payload.ParseFromString(message);
+            if (server_payload.code() == 200)
+            {
+                printf("%s \n", server_payload.message().c_str());
+            }
+            else
+            {
+                printf("Error del server %d -- %s!", server_payload.code(), server_payload.message().c_str())
+            }
+
             str_overwrite_stdout();
         }
-        else if (receive == 0)
+        else if (received_message == 0)
         {
             break;
         }

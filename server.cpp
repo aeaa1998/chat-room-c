@@ -252,7 +252,7 @@ void send_message(char *mess, int uid)
                     payload.set_code(200);
                     string out;
                     payload.SerializeToString(&out);
-                    if (write(clients[i]->socket_d, out.c_str(), strlen(out)) < 0)
+                    if (write(clients[i]->socket_d, out.c_str(), out.length()) < 0)
                     {
                         //Aca se mandaria 500 con el mensaje de error
                         perror("Error: no se pudo enviar el mensaje privado");
