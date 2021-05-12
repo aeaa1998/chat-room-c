@@ -223,10 +223,25 @@ class Payload : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   ::std::string* release_sender();
   void set_allocated_sender(::std::string* sender);
 
-  // optional string message = 2;
+  // optional string ip = 2;
+  bool has_ip() const;
+  void clear_ip();
+  static const int kIpFieldNumber = 2;
+  const ::std::string& ip() const;
+  void set_ip(const ::std::string& value);
+  #if LANG_CXX11
+  void set_ip(::std::string&& value);
+  #endif
+  void set_ip(const char* value);
+  void set_ip(const char* value, size_t size);
+  ::std::string* mutable_ip();
+  ::std::string* release_ip();
+  void set_allocated_ip(::std::string* ip);
+
+  // optional string message = 3;
   bool has_message() const;
   void clear_message();
-  static const int kMessageFieldNumber = 2;
+  static const int kMessageFieldNumber = 3;
   const ::std::string& message() const;
   void set_message(const ::std::string& value);
   #if LANG_CXX11
@@ -238,10 +253,10 @@ class Payload : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   ::std::string* release_message();
   void set_allocated_message(::std::string* message);
 
-  // optional string extra = 4;
+  // optional string extra = 5;
   bool has_extra() const;
   void clear_extra();
-  static const int kExtraFieldNumber = 4;
+  static const int kExtraFieldNumber = 5;
   const ::std::string& extra() const;
   void set_extra(const ::std::string& value);
   #if LANG_CXX11
@@ -253,10 +268,10 @@ class Payload : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   ::std::string* release_extra();
   void set_allocated_extra(::std::string* extra);
 
-  // optional .Payload.PayloadFlag flag = 3;
+  // optional .Payload.PayloadFlag flag = 4;
   bool has_flag() const;
   void clear_flag();
-  static const int kFlagFieldNumber = 3;
+  static const int kFlagFieldNumber = 4;
   ::Payload_PayloadFlag flag() const;
   void set_flag(::Payload_PayloadFlag value);
 
@@ -264,6 +279,8 @@ class Payload : public ::google::protobuf::Message /* @@protoc_insertion_point(c
  private:
   void set_has_sender();
   void clear_has_sender();
+  void set_has_ip();
+  void clear_has_ip();
   void set_has_message();
   void clear_has_message();
   void set_has_flag();
@@ -275,6 +292,7 @@ class Payload : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   ::google::protobuf::internal::HasBits<1> _has_bits_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   ::google::protobuf::internal::ArenaStringPtr sender_;
+  ::google::protobuf::internal::ArenaStringPtr ip_;
   ::google::protobuf::internal::ArenaStringPtr message_;
   ::google::protobuf::internal::ArenaStringPtr extra_;
   int flag_;
@@ -357,15 +375,81 @@ inline void Payload::set_allocated_sender(::std::string* sender) {
   // @@protoc_insertion_point(field_set_allocated:Payload.sender)
 }
 
-// optional string message = 2;
-inline bool Payload::has_message() const {
+// optional string ip = 2;
+inline bool Payload::has_ip() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
-inline void Payload::set_has_message() {
+inline void Payload::set_has_ip() {
   _has_bits_[0] |= 0x00000002u;
 }
-inline void Payload::clear_has_message() {
+inline void Payload::clear_has_ip() {
   _has_bits_[0] &= ~0x00000002u;
+}
+inline void Payload::clear_ip() {
+  ip_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_ip();
+}
+inline const ::std::string& Payload::ip() const {
+  // @@protoc_insertion_point(field_get:Payload.ip)
+  return ip_.GetNoArena();
+}
+inline void Payload::set_ip(const ::std::string& value) {
+  set_has_ip();
+  ip_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:Payload.ip)
+}
+#if LANG_CXX11
+inline void Payload::set_ip(::std::string&& value) {
+  set_has_ip();
+  ip_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:Payload.ip)
+}
+#endif
+inline void Payload::set_ip(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
+  set_has_ip();
+  ip_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:Payload.ip)
+}
+inline void Payload::set_ip(const char* value, size_t size) {
+  set_has_ip();
+  ip_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:Payload.ip)
+}
+inline ::std::string* Payload::mutable_ip() {
+  set_has_ip();
+  // @@protoc_insertion_point(field_mutable:Payload.ip)
+  return ip_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* Payload::release_ip() {
+  // @@protoc_insertion_point(field_release:Payload.ip)
+  if (!has_ip()) {
+    return NULL;
+  }
+  clear_has_ip();
+  return ip_.ReleaseNonDefaultNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void Payload::set_allocated_ip(::std::string* ip) {
+  if (ip != NULL) {
+    set_has_ip();
+  } else {
+    clear_has_ip();
+  }
+  ip_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ip);
+  // @@protoc_insertion_point(field_set_allocated:Payload.ip)
+}
+
+// optional string message = 3;
+inline bool Payload::has_message() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void Payload::set_has_message() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void Payload::clear_has_message() {
+  _has_bits_[0] &= ~0x00000004u;
 }
 inline void Payload::clear_message() {
   message_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
@@ -423,15 +507,15 @@ inline void Payload::set_allocated_message(::std::string* message) {
   // @@protoc_insertion_point(field_set_allocated:Payload.message)
 }
 
-// optional .Payload.PayloadFlag flag = 3;
+// optional .Payload.PayloadFlag flag = 4;
 inline bool Payload::has_flag() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
+  return (_has_bits_[0] & 0x00000010u) != 0;
 }
 inline void Payload::set_has_flag() {
-  _has_bits_[0] |= 0x00000008u;
+  _has_bits_[0] |= 0x00000010u;
 }
 inline void Payload::clear_has_flag() {
-  _has_bits_[0] &= ~0x00000008u;
+  _has_bits_[0] &= ~0x00000010u;
 }
 inline void Payload::clear_flag() {
   flag_ = 0;
@@ -448,15 +532,15 @@ inline void Payload::set_flag(::Payload_PayloadFlag value) {
   // @@protoc_insertion_point(field_set:Payload.flag)
 }
 
-// optional string extra = 4;
+// optional string extra = 5;
 inline bool Payload::has_extra() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
+  return (_has_bits_[0] & 0x00000008u) != 0;
 }
 inline void Payload::set_has_extra() {
-  _has_bits_[0] |= 0x00000004u;
+  _has_bits_[0] |= 0x00000008u;
 }
 inline void Payload::clear_has_extra() {
-  _has_bits_[0] &= ~0x00000004u;
+  _has_bits_[0] &= ~0x00000008u;
 }
 inline void Payload::clear_extra() {
   extra_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
