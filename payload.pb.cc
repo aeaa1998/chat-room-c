@@ -57,14 +57,16 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::Payload, message_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::Payload, flag_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::Payload, extra_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::Payload, code_),
   0,
   1,
   2,
   4,
   3,
+  5,
 };
 static const ::google::protobuf::internal::MigrationSchema schemas[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
-  { 0, 10, sizeof(::Payload)},
+  { 0, 11, sizeof(::Payload)},
 };
 
 static ::google::protobuf::Message const * const file_default_instances[] = {
@@ -92,15 +94,16 @@ void protobuf_RegisterTypes(const ::std::string&) {
 void AddDescriptorsImpl() {
   InitDefaults();
   static const char descriptor[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
-      "\n\rpayload.proto\"\333\001\n\007Payload\022\016\n\006sender\030\001 "
+      "\n\rpayload.proto\"\351\001\n\007Payload\022\016\n\006sender\030\001 "
       "\001(\t\022\n\n\002ip\030\002 \001(\t\022\017\n\007message\030\003 \001(\t\022\"\n\004flag"
       "\030\004 \001(\0162\024.Payload.PayloadFlag\022\r\n\005extra\030\005 "
-      "\001(\t\"p\n\013PayloadFlag\022\020\n\014general_chat\020\000\022\020\n\014"
-      "private_chat\020\001\022\021\n\rupdate_status\020\002\022\r\n\tuse"
-      "r_info\020\003\022\r\n\tuser_list\020\004\022\014\n\010register\020\005"
+      "\001(\t\022\014\n\004code\030\006 \001(\005\"p\n\013PayloadFlag\022\020\n\014gene"
+      "ral_chat\020\000\022\020\n\014private_chat\020\001\022\021\n\rupdate_s"
+      "tatus\020\002\022\r\n\tuser_info\020\003\022\r\n\tuser_list\020\004\022\014\n"
+      "\010register\020\005"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 237);
+      descriptor, 251);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "payload.proto", &protobuf_RegisterTypes);
 }
@@ -156,6 +159,7 @@ const int Payload::kIpFieldNumber;
 const int Payload::kMessageFieldNumber;
 const int Payload::kFlagFieldNumber;
 const int Payload::kExtraFieldNumber;
+const int Payload::kCodeFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Payload::Payload()
@@ -186,7 +190,9 @@ Payload::Payload(const Payload& from)
   if (from.has_extra()) {
     extra_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.extra_);
   }
-  flag_ = from.flag_;
+  ::memcpy(&flag_, &from.flag_,
+    static_cast<size_t>(reinterpret_cast<char*>(&code_) -
+    reinterpret_cast<char*>(&flag_)) + sizeof(code_));
   // @@protoc_insertion_point(copy_constructor:Payload)
 }
 
@@ -195,7 +201,9 @@ void Payload::SharedCtor() {
   ip_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   message_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   extra_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  flag_ = 0;
+  ::memset(&flag_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&code_) -
+      reinterpret_cast<char*>(&flag_)) + sizeof(code_));
 }
 
 Payload::~Payload() {
@@ -245,7 +253,11 @@ void Payload::Clear() {
       extra_.ClearNonDefaultToEmptyNoArena();
     }
   }
-  flag_ = 0;
+  if (cached_has_bits & 48u) {
+    ::memset(&flag_, 0, static_cast<size_t>(
+        reinterpret_cast<char*>(&code_) -
+        reinterpret_cast<char*>(&flag_)) + sizeof(code_));
+  }
   _has_bits_.Clear();
   _internal_metadata_.Clear();
 }
@@ -344,6 +356,20 @@ bool Payload::MergePartialFromCodedStream(
         break;
       }
 
+      // optional int32 code = 6;
+      case 6: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(48u /* 48 & 0xFF */)) {
+          set_has_code();
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &code_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
       default: {
       handle_unusual:
         if (tag == 0) {
@@ -417,6 +443,11 @@ void Payload::SerializeWithCachedSizes(
       5, this->extra(), output);
   }
 
+  // optional int32 code = 6;
+  if (cached_has_bits & 0x00000020u) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(6, this->code(), output);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
@@ -482,6 +513,11 @@ void Payload::SerializeWithCachedSizes(
         5, this->extra(), target);
   }
 
+  // optional int32 code = 6;
+  if (cached_has_bits & 0x00000020u) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(6, this->code(), target);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
@@ -499,7 +535,7 @@ size_t Payload::ByteSizeLong() const {
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         _internal_metadata_.unknown_fields());
   }
-  if (_has_bits_[0 / 32] & 31u) {
+  if (_has_bits_[0 / 32] & 63u) {
     // optional string sender = 1;
     if (has_sender()) {
       total_size += 1 +
@@ -534,6 +570,13 @@ size_t Payload::ByteSizeLong() const {
         ::google::protobuf::internal::WireFormatLite::EnumSize(this->flag());
     }
 
+    // optional int32 code = 6;
+    if (has_code()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->code());
+    }
+
   }
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
   SetCachedSize(cached_size);
@@ -563,7 +606,7 @@ void Payload::MergeFrom(const Payload& from) {
   (void) cached_has_bits;
 
   cached_has_bits = from._has_bits_[0];
-  if (cached_has_bits & 31u) {
+  if (cached_has_bits & 63u) {
     if (cached_has_bits & 0x00000001u) {
       set_has_sender();
       sender_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.sender_);
@@ -582,6 +625,9 @@ void Payload::MergeFrom(const Payload& from) {
     }
     if (cached_has_bits & 0x00000010u) {
       flag_ = from.flag_;
+    }
+    if (cached_has_bits & 0x00000020u) {
+      code_ = from.code_;
     }
     _has_bits_[0] |= cached_has_bits;
   }
@@ -620,6 +666,7 @@ void Payload::InternalSwap(Payload* other) {
   extra_.Swap(&other->extra_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
     GetArenaNoVirtual());
   swap(flag_, other->flag_);
+  swap(code_, other->code_);
   swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
 }

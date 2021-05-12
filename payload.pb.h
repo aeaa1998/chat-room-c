@@ -275,6 +275,13 @@ class Payload : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   ::Payload_PayloadFlag flag() const;
   void set_flag(::Payload_PayloadFlag value);
 
+  // optional int32 code = 6;
+  bool has_code() const;
+  void clear_code();
+  static const int kCodeFieldNumber = 6;
+  ::google::protobuf::int32 code() const;
+  void set_code(::google::protobuf::int32 value);
+
   // @@protoc_insertion_point(class_scope:Payload)
  private:
   void set_has_sender();
@@ -287,6 +294,8 @@ class Payload : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   void clear_has_flag();
   void set_has_extra();
   void clear_has_extra();
+  void set_has_code();
+  void clear_has_code();
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::internal::HasBits<1> _has_bits_;
@@ -296,6 +305,7 @@ class Payload : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   ::google::protobuf::internal::ArenaStringPtr message_;
   ::google::protobuf::internal::ArenaStringPtr extra_;
   int flag_;
+  ::google::protobuf::int32 code_;
   friend struct ::protobuf_payload_2eproto::TableStruct;
 };
 // ===================================================================
@@ -596,6 +606,30 @@ inline void Payload::set_allocated_extra(::std::string* extra) {
   }
   extra_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), extra);
   // @@protoc_insertion_point(field_set_allocated:Payload.extra)
+}
+
+// optional int32 code = 6;
+inline bool Payload::has_code() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void Payload::set_has_code() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void Payload::clear_has_code() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void Payload::clear_code() {
+  code_ = 0;
+  clear_has_code();
+}
+inline ::google::protobuf::int32 Payload::code() const {
+  // @@protoc_insertion_point(field_get:Payload.code)
+  return code_;
+}
+inline void Payload::set_code(::google::protobuf::int32 value) {
+  set_has_code();
+  code_ = value;
+  // @@protoc_insertion_point(field_set:Payload.code)
 }
 
 #ifdef __GNUC__
