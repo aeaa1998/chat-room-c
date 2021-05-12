@@ -30,7 +30,7 @@ int uid = 10;
 typedef struct
 {
     struct sockaddr_in address;
-    int sockfd;
+    int socket_d;
     int uid;
     char name[32];
     int status;
@@ -128,7 +128,7 @@ void send_message_to_chat_group(Payload payload, int uid)
         {
             if (clients[i]->uid != uid)
             {
-                if (write(clients[i]->sockfd, message_priv.c_str(), strlen(message_priv.c_str())) < 0)
+                if (write(clients[i]->socket_d, message_priv.c_str(), strlen(message_priv.c_str())) < 0)
                 {
                     perror("ERROR: write to descriptor failed");
                     break;
@@ -175,6 +175,9 @@ void send_message(char *mess, int uid)
     string message(mess);
     Payload payload;
     payload.ParseFromString(message);
+
+    // payload.flag() == Payload_PayloadFlag::Payload_PayloadFlag_private_chat;
+
     if (payload.flag().compare("list") == 0)
     {
 
@@ -188,7 +191,7 @@ void send_message(char *mess, int uid)
                     string message_list = return_list(payload);
 
                     printf("%s\n", message_list.c_str());
-                    if (write(clients[i]->sockfd, message_list.c_str(), strlen(message_list.c_str())) < 0)
+                    if (write(clients[i]->socket_d, message_list.c_str(), strlen(message_list.c_str())) < 0)
                     {
                         perror("ERROR: write to descriptor failed");
                         break;
@@ -221,7 +224,7 @@ void send_message(char *mess, int uid)
             {
                 if (strcmp(clients[i]->name, payload.sender().c_str()) == 0)
                 {
-                    if (write(clientToSend->sockfd, info_of_user.c_str(), strlen(info_of_user.c_str())) < 0)
+                    if (write(clientToSend->socket_d, info_of_user.c_str(), strlen(info_of_user.c_str())) < 0)
                     {
                         perror("ERROR: write to descriptor failed");
                         break;
@@ -230,18 +233,29 @@ void send_message(char *mess, int uid)
             }
         }
     }
-    else if (payload.flag().compare("private") == 0)
+    //Comparación de si es un mensaje privado
+    else if (payload.flag() == Payload_PayloadFlag::Payload_PayloadFlag_private_chat)
     {
         for (int i = 0; i < MAX_CLIENTS; ++i)
         {
             if (clients[i])
             {
-                string message_priv = payload.sender() + " (private): " + payload.message();
                 if (strcmp(clients[i]->name, payload.extra().c_str()) == 0)
                 {
-                    if (write(clients[i]->sockfd, message_priv.c_str(), strlen(message_priv.c_str())) < 0)
+                    //Se manda solo el string del mensaje privado al username destinado
+                    //El client ya solo imprime el texto sin tener que pensar que respuesta es
+                    //MASK: {sender_username} + (privado): + {mensaje}
+                    string message_priv = payload.sender() + " (private): " + payload.message();
+                    Payload payload;
+                    payload.set_sender("server");
+                    payload.set_message(message_priv);
+                    payload.set_code(200);
+                    string out;
+                    payload.SerializeToString(&out);
+                    if (write(clients[i]->socket_d, out.c_str(), strlen(out)) < 0)
                     {
-                        perror("ERROR: no se pudo enviar el mensaje privado");
+                        //Aca se mandaria 500 con el mensaje de error
+                        perror("Error: no se pudo enviar el mensaje privado");
                         break;
                     }
                     break;
@@ -273,7 +287,7 @@ void send_message(char *mess, int uid)
                 {
                     string message_update_status = "Status actualizado " + getStatusString(clients[i]->status) + " -> " + getStatusString(new_status);
                     clients[i]->status = new_status;
-                    if (write(clients[i]->sockfd, message_update_status.c_str(), strlen(message_update_status.c_str())) < 0)
+                    if (write(clients[i]->socket_d, message_update_status.c_str(), strlen(message_update_status.c_str())) < 0)
                     {
                         perror("ERROR: write to descriptor failed");
                         break;
@@ -302,7 +316,7 @@ void *handle_client(void *arg)
     client_t *cli = (client_t *)arg;
 
     // Name
-    if (recv(cli->sockfd, name, 32, 0) <= 0 || strlen(name) < 2 || strlen(name) >= 32 - 1)
+    if (recv(cli->socket_d, name, 32, 0) <= 0 || strlen(name) < 2 || strlen(name) >= 32 - 1)
     {
         printf("Didn't enter the name.\n");
         leave_flag = 1;
@@ -324,7 +338,7 @@ void *handle_client(void *arg)
             break;
         }
 
-        int receive = recv(cli->sockfd, buff_out, BUFFER_SZ, 0);
+        int receive = recv(cli->socket_d, buff_out, BUFFER_SZ, 0);
         if (receive > 0)
         {
             if (strlen(buff_out) > 0)
@@ -352,7 +366,7 @@ void *handle_client(void *arg)
     }
 
     /* Delete client from queue and yield thread */
-    close(cli->sockfd);
+    close(cli->socket_d);
     queue_remove(cli->uid);
     free(cli);
     cli_count--;
@@ -426,7 +440,7 @@ int main(int argc, char **argv)
         /* Client settings */
         client_t *cli = (client_t *)malloc(sizeof(client_t));
         cli->address = cli_addr;
-        cli->sockfd = connfd;
+        cli->socket_d = connfd;
         cli->uid = uid++;
         cli->status = ACTIVO;
 

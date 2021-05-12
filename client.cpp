@@ -279,6 +279,7 @@ void *recv_msg_handler(void *arg)
         int receive = recv(sockfd, message, LENGTH, 0);
         if (receive > 0)
         {
+            Payload server_payload;
             printf("%s \n", message);
             str_overwrite_stdout();
         }

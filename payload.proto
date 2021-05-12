@@ -1,7 +1,9 @@
 syntax = "proto2";
 
 // Flag ya solo puede tener los valores definidos dentro del enum y no otros
-// como seria en un string general_chat es el flag para el chat general
+// como seria en un string
+// SIGNIFICADO de los enum values
+//  general_chat es el flag para el chat general
 // private_chat es el flag para el chat privado
 // update_status es el flag para solicitar un cambio de status
 // user_info es el flag para para pedir la información de un usuario
@@ -22,7 +24,8 @@ syntax = "proto2";
 // USO del campo EXTRA
 // private_chat -> el campo extra  debe contener el username del recipient
 // update_status -> el campo extra debe de contener 'ACTIVO' 'OCUPADO' o
-// 'INACIVO' user_info -> el campo extra debe contener el username del recipient
+// 'INACIVO'
+// user_info -> el campo extra debe contener el username del recipient
 
 // Caso del register
 // En sender ya estas mandando tu username
@@ -46,4 +49,8 @@ message Payload {
   }
   optional PayloadFlag flag = 4;
   optional string extra = 5;
+  // Representación de un HTTP REQUEST
+  // 200 -> ok
+  // 500 -> server error
+  optional int32 code = 6;
 }
