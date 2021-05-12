@@ -15,7 +15,17 @@
 #define ACTIVO = 1
 #define OCUPADO = 2
 #define INACTIVO = 3
-// #define PRIVATE_FLAG "private"
+// //Listar todos los usuarios
+// #define LIST_USERS "list"
+// //Mensaje privado
+// #define PRIVATE_MESSAGE "private"
+// //Chat general
+// #define GENERAL_CHAT "general"
+// //Cambio de status
+// #define STATUS_UPDATE "status"
+// //Solicitando la información de un usuario
+// #define INFO_REQUEST "info"
+
 // Global variables
 using namespace std;
 

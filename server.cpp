@@ -199,35 +199,36 @@ void send_message(char *mess, int uid)
     }
     else if (payload.flag().compare("info") == 0)
     {
-        client_t *clientToSend;
-        client_t *clientToGetInfo;
+        string info_of_user = "";
         for (int i = 0; i < MAX_CLIENTS; ++i)
         {
             if (clients[i])
             {
-                string message_priv = payload.sender() + " (private): " + payload.message();
-                if (strcmp(clients[i]->name, payload.sender().c_str()) == 0)
+                if (strcmp(clients[i]->name, payload.extra().c_str()) == 0)
                 {
-                    clientToSend = clients[i];
-                }
-                else if (strcmp(clients[i]->name, payload.extra().c_str()) == 0)
-                {
-                    clientToGetInfo = clients[i];
+                    string username(clients[i]->name);
+                    string uuid_s = to_string(clients[i]->uid);
+                    char address_arr[LENGTH];
+                    inet_ntop(AF_INET, &clients[i]->address.sin_addr, address_arr, LENGTH);
+                    string address(address_arr);
+                    info_of_user = info_of_user + "Usuario: " + username + "\n" + "Status: " + getStatusString(clients[i]->status) + "\nCodigo unico: " + uuid_s + "\nIp asociada: " + address;
                 }
             }
         }
-        string username(clientToGetInfo->name);
-        string uuid_s = to_string(clientToGetInfo->uid);
-        char address_arr[LENGTH];
-        inet_ntop(AF_INET, &clientToGetInfo->address.sin_addr, address_arr, LENGTH);
-        string address(address_arr);
-        string info_of_user = "Usuario: " + username + "\n" + "Status: " + getStatusString(clientToGetInfo->status) + "\nCodigo unico: " + uuid_s + "\nIp asociada: " + address;
-        if (write(clientToSend->sockfd, info_of_user.c_str(), strlen(info_of_user.c_str())) < 0)
+        for (int i = 0; i < MAX_CLIENTS; ++i)
         {
-            perror("ERROR: write to descriptor failed");
+            if (clients[i])
+            {
+                if (strcmp(clients[i]->name, payload.sender().c_str()) == 0)
+                {
+                    if (write(clientToSend->sockfd, info_of_user.c_str(), strlen(info_of_user.c_str())) < 0)
+                    {
+                        perror("ERROR: write to descriptor failed");
+                        break;
+                    }
+                }
+            }
         }
-        delete clientToSend;
-        delete clientToGetInfo;
     }
     else if (payload.flag().compare("private") == 0)
     {
@@ -240,7 +241,7 @@ void send_message(char *mess, int uid)
                 {
                     if (write(clients[i]->sockfd, message_priv.c_str(), strlen(message_priv.c_str())) < 0)
                     {
-                        perror("ERROR: write to descriptor failed");
+                        perror("ERROR: no se pudo enviar el mensaje privado");
                         break;
                     }
                     break;
@@ -309,7 +310,7 @@ void *handle_client(void *arg)
     else
     {
         strcpy(cli->name, name);
-        sprintf(buff_out, "%s has joined\n", cli->name);
+        sprintf(buff_out, "%s se ha unido al\n", cli->name);
         printf("%s", buff_out);
         send_message(buff_out, cli->uid);
     }
