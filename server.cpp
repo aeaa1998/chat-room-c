@@ -47,7 +47,7 @@ int get_client_index(string name)
     {
         if (clients[i])
         {
-            if (client[i]->name.compare(name) == 0)
+            if (clients[i]->name.compare(name) == 0)
             {
                 return i;
             }
@@ -189,7 +189,7 @@ void send_error_message(string message, int i)
     error_payload.set_sender("server");
     error_payload.set_message(message);
     string out;
-    payload.SerializeToString(&out);
+    error_payload.SerializeToString(&out);
     write(clients[i]->socket_d, out.c_str(), out.length());
 }
 
@@ -377,7 +377,7 @@ void *manage_added_client(void *arg)
     }
     else
     {
-        strcpy(cli->name, register_payload.sender());
+        strcpy(cli->name, register_payload.sender().c_str());
         sprintf(buff_out, "%s se ha unido al\n", cli->name);
         printf("%s", buff_out);
         send_message(buff_out, cli->uid);
