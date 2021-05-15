@@ -12,19 +12,6 @@
 
 #define LENGTH 2048
 #define IP "127.0.0.1"
-#define ACTIVO = 1
-#define OCUPADO = 2
-#define INACTIVO = 3
-// //Listar todos los usuarios
-// #define LIST_USERS "list"
-// //Mensaje privado
-// #define PRIVATE_MESSAGE "private"
-// //Chat general
-// #define GENERAL_CHAT "general"
-// //Cambio de status
-// #define STATUS_UPDATE "status"
-// //Solicitando la información de un usuario
-// #define INFO_REQUEST "info"
 
 // Global variables
 using namespace std;
@@ -32,6 +19,46 @@ using namespace std;
 volatile sig_atomic_t flag = 0;
 int sockfd = 0;
 char name[32];
+
+bool getMyIP(string &myIP)
+{
+    char szBuffer[1024];
+
+#ifdef WIN32
+    WSADATA wsaData;
+    WORD wVersionRequested = MAKEWORD(2, 0);
+    if (::WSAStartup(wVersionRequested, &wsaData) != 0)
+        return false;
+#endif
+
+    if (gethostname(szBuffer, sizeof(szBuffer)) == SOCKET_ERROR)
+    {
+#ifdef WIN32
+        WSACleanup();
+#endif
+        return false;
+    }
+
+    struct hostent *host = gethostbyname(szBuffer);
+    if (host == NULL)
+    {
+#ifdef WIN32
+        WSACleanup();
+#endif
+        return false;
+    }
+
+    //Obtain the computer's IP
+    myIP += ((struct in_addr *)(host->h_addr))->S_un.S_un_b.s_b1;
+    myIP += ((struct in_addr *)(host->h_addr))->S_un.S_un_b.s_b2;
+    myIP += ((struct in_addr *)(host->h_addr))->S_un.S_un_b.s_b3;
+    myIP += ((struct in_addr *)(host->h_addr))->S_un.S_un_b.s_b4;
+
+#ifdef WIN32
+    WSACleanup();
+#endif
+    return true;
+}
 
 void str_overwrite_stdout()
 {
@@ -120,15 +147,15 @@ int check_is_status(char message[])
         return -1;
     }
 
-    if (message[3] == '1')
+    if (message[3] == 'ACTIVO')
     {
         return 1;
     }
-    else if (message[3] == '2')
+    else if (message[3] == 'INACTIVO')
     {
         return 2;
     }
-    else if (message[3] == '3')
+    else if (message[3] == 'OCUPADO')
     {
         return 3;
     }
@@ -157,14 +184,14 @@ void *send_msg_handler(void *arg)
         {
             if (strcmp(message, "--list") == 0)
             {
-                payload.set_flag("list");
+                payload.set_flag(Payload_PayloadFlag::Payload_PayloadFlag_user_list);
                 string out;
                 payload.SerializeToString(&out);
                 sprintf(buffer, "%s", out.c_str());
             }
             else if (check_is_info_user(message) == 1)
             {
-                payload.set_flag("info");
+                payload.set_flag(Payload_PayloadFlag::Payload_PayloadFlag_user_info);
                 int i;
                 int offset = 0;
                 int end = offset + 6;
@@ -198,7 +225,7 @@ void *send_msg_handler(void *arg)
             else if (check_is_private(message) == 1)
             {
 
-                payload.set_flag("private");
+                payload.set_flag(Payload_PayloadFlag::Payload_PayloadFlag_private_chat);
                 int i;
                 int offset = 0;
                 int end = offset + 3;
@@ -236,15 +263,15 @@ void *send_msg_handler(void *arg)
                 int status = check_is_status(message);
                 if (status == 1)
                 {
-                    payload.set_message("1");
+                    payload.set_message("ACTIVO");
                 }
                 else if (status == 2)
                 {
-                    payload.set_message("2");
+                    payload.set_message("INACTIVO");
                 }
                 else
                 {
-                    payload.set_message("3");
+                    payload.set_message("OCUPADO");
                 }
 
                 payload.set_flag("status");
@@ -255,7 +282,7 @@ void *send_msg_handler(void *arg)
             else
             {
                 payload.set_message(message);
-                payload.set_flag("message");
+                payload.set_flag(Payload_PayloadFlag::Payload_PayloadFlag_general_chat);
                 string out;
                 payload.SerializeToString(&out);
                 sprintf(buffer, "%s", out.c_str());
@@ -271,7 +298,7 @@ void *send_msg_handler(void *arg)
     catch_ctrl_c_and_exit(2);
 }
 
-void *recv_msg_handler(void *arg)
+void *incoming_messages_handler(void *arg)
 {
     char message[LENGTH] = {};
     while (1)
@@ -306,6 +333,7 @@ void *recv_msg_handler(void *arg)
 
 int main(int argc, char **argv)
 {
+    char buffer[LENGTH + 32];
     if (argc != 3)
     {
         printf("Usage: %s <port>\n", argv[0]);
@@ -326,7 +354,7 @@ int main(int argc, char **argv)
 
     if (strlen(name) > 32 || strlen(name) < 2)
     {
-        printf("Name must be less than 30 and more than 2 characters.\n");
+        printf("El nombre debe de encontrarse entre 2 y 30 caracteres\n");
         return EXIT_FAILURE;
     }
 
@@ -347,9 +375,22 @@ int main(int argc, char **argv)
     }
 
     // Send name
-    send(sockfd, name, 32, 0);
+    Payload register_payload;
+    register_payload.set_sender(name);
+    string my_ip;
+    if (!getMyIP(my_ip))
+    {
+        printf("Solo perdidas");
+        return EXIT_FAILURE;
+    };
+    register_payload.set_ip(my_ip);
+    register_payload.set_flag(Payload_PayloadFlag::Payload_PayloadFlag_register_);
+    string out;
+    register_payload.SerializeToString(&out);
+    sprintf(buffer, "%s", out.c_str());
+    send(sockfd, buffer, strlen(buffer), 0);
 
-    printf("=== WELCOME TO THE CHATROOM ===\n");
+    printf("Bienvenido amigo \n");
 
     pthread_t send_msg_thread;
     if (pthread_create(&send_msg_thread, NULL, &send_msg_handler, NULL) != 0)
@@ -359,7 +400,7 @@ int main(int argc, char **argv)
     }
 
     pthread_t recv_msg_thread;
-    if (pthread_create(&recv_msg_thread, NULL, &recv_msg_handler, NULL) != 0)
+    if (pthread_create(&recv_msg_thread, NULL, &incoming_messages_handler, NULL) != 0)
     {
         printf("ERROR: pthread\n");
         return EXIT_FAILURE;

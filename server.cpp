@@ -10,14 +10,15 @@
 #include <pthread.h>
 #include <sys/types.h>
 #include <signal.h>
+
 #include "payload.pb.h"
 
 #include <atomic>
 #define _Atomic(X) std::atomic<X>
 using namespace std;
 #define LENGTH 2048
-#define MAX_CLIENTS 100
-#define BUFFER_SZ 2048
+#define CLIENT_LIMIT 100
+#define BUFFER_SIZE 2048
 #define IP "127.0.0.1"
 #define ACTIVO 1
 #define OCUPADO 2
@@ -36,9 +37,24 @@ typedef struct
     int status;
 } client_t;
 
-client_t *clients[MAX_CLIENTS];
+client_t *clients[CLIENT_LIMIT];
 
 pthread_mutex_t clients_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+int get_client_index(string name)
+{
+    for (int i = 0; i < CLIENT_LIMIT; ++i)
+    {
+        if (clients[i])
+        {
+            if (client[i]->name.compare(name) == 0)
+            {
+                return i;
+            }
+        }
+    }
+    return -1;
+}
 
 void str_overwrite_stdout()
 {
@@ -68,12 +84,11 @@ void print_client_addr(struct sockaddr_in addr)
            (addr.sin_addr.s_addr & 0xff000000) >> 24);
 }
 
-/* Add clients to queue */
 void queue_add(client_t *cl)
 {
     pthread_mutex_lock(&clients_mutex);
 
-    for (int i = 0; i < MAX_CLIENTS; ++i)
+    for (int i = 0; i < CLIENT_LIMIT; ++i)
     {
         if (!clients[i])
         {
@@ -85,11 +100,10 @@ void queue_add(client_t *cl)
     pthread_mutex_unlock(&clients_mutex);
 }
 
-/* Remove clients to queue */
 void queue_remove(int uid)
 {
     pthread_mutex_lock(&clients_mutex);
-    for (int i = 0; i < MAX_CLIENTS; ++i)
+    for (int i = 0; i < CLIENT_LIMIT; ++i)
     {
         if (clients[i])
         {
@@ -107,7 +121,7 @@ void queue_remove(int uid)
 /* Print requested client */
 client_t *return_client(int uid)
 {
-    for (int i = 0; i < MAX_CLIENTS; ++i)
+    for (int i = 0; i < CLIENT_LIMIT; ++i)
     {
         if (clients[i])
         {
@@ -122,7 +136,7 @@ client_t *return_client(int uid)
 void send_message_to_chat_group(Payload payload, int uid)
 {
     string message_priv = payload.sender() + ": " + payload.message();
-    for (int i = 0; i < MAX_CLIENTS; ++i)
+    for (int i = 0; i < CLIENT_LIMIT; ++i)
     {
         if (clients[i])
         {
@@ -154,7 +168,7 @@ string getStatusString(int code)
 string return_list(Payload payload)
 {
     string message_list = "Lista de mensajes para " + payload.sender() + "\n";
-    for (int i = 0; i < MAX_CLIENTS; ++i)
+    for (int i = 0; i < CLIENT_LIMIT; ++i)
     {
         if (clients[i])
         {
@@ -168,6 +182,17 @@ string return_list(Payload payload)
     return message_list;
 }
 
+void send_error_message(string message, int i)
+{
+    Payload error_payload;
+    error_payload.set_code(500);
+    error_payload.set_sender("server");
+    error_payload.set_message(message);
+    string out;
+    payload.SerializeToString(&out);
+    write(clients[i]->socket_d, out.c_str(), out.length());
+}
+
 /* Manages what message to send private or not */
 void send_message(char *mess, int uid)
 {
@@ -175,35 +200,37 @@ void send_message(char *mess, int uid)
     string message(mess);
     Payload payload;
     payload.ParseFromString(message);
+    int sender_index = get_client_index(payload.sender());
+    Payload server_payload;
+    server_payload.set_sender("server");
+    server_payload.set_code(200);
 
-    // payload.flag() == Payload_PayloadFlag::Payload_PayloadFlag_private_chat;
-
-    if (payload.flag().compare("list") == 0)
+    if (payload.flag() == Payload_PayloadFlag::Payload_PayloadFlag_user_list)
     {
 
-        for (int i = 0; i < MAX_CLIENTS; ++i)
+        for (int i = 0; i < CLIENT_LIMIT; ++i)
         {
             if (clients[i])
             {
                 if (strcmp(clients[i]->name, payload.sender().c_str()) == 0)
                 {
-                    printf("ACa");
                     string message_list = return_list(payload);
-
-                    printf("%s\n", message_list.c_str());
-                    if (write(clients[i]->socket_d, message_list.c_str(), strlen(message_list.c_str())) < 0)
+                    server_payload.set_message(message_list);
+                    string out;
+                    server_payload.SerializeToString(&out);
+                    if (write(clients[i]->socket_d, out.c_str(), out.length()) < 0)
                     {
-                        perror("ERROR: write to descriptor failed");
+                        send_error_message("No se pudo obtener la lista de clientes.", sender_index);
                         break;
                     }
                 }
             }
         }
     }
-    else if (payload.flag().compare("info") == 0)
+    else if (payload.flag() == Payload_PayloadFlag::Payload_PayloadFlag_user_info)
     {
         string info_of_user = "";
-        for (int i = 0; i < MAX_CLIENTS; ++i)
+        for (int i = 0; i < CLIENT_LIMIT; ++i)
         {
             if (clients[i])
             {
@@ -218,67 +245,79 @@ void send_message(char *mess, int uid)
                 }
             }
         }
-        for (int i = 0; i < MAX_CLIENTS; ++i)
+        server_payload.set_message(info_of_user);
+        string out;
+        server_payload.SerializeToString(&out);
+        int found = 0;
+        for (int i = 0; i < CLIENT_LIMIT; ++i)
         {
             if (clients[i])
             {
                 if (strcmp(clients[i]->name, payload.sender().c_str()) == 0)
                 {
-                    if (write(clientToSend->socket_d, info_of_user.c_str(), strlen(info_of_user.c_str())) < 0)
+                    found = 1;
+                    int if (write(clientToSend->socket_d, out.c_str(), out.length()) < 0)
                     {
-                        perror("ERROR: write to descriptor failed");
+                        send_error_message("No se pudo obtener la informacion del usuario deseado.", sender_index);
                         break;
                     }
                 }
             }
         }
+        if (found == 0)
+        {
+            send_error_message("El usuario ingresado no existe.", sender_index);
+        }
     }
     //Comparación de si es un mensaje privado
     else if (payload.flag() == Payload_PayloadFlag::Payload_PayloadFlag_private_chat)
     {
-        for (int i = 0; i < MAX_CLIENTS; ++i)
+        int found = 0;
+        for (int i = 0; i < CLIENT_LIMIT; ++i)
         {
             if (clients[i])
             {
                 if (strcmp(clients[i]->name, payload.extra().c_str()) == 0)
                 {
+                    found = 1;
                     //Se manda solo el string del mensaje privado al username destinado
                     //El client ya solo imprime el texto sin tener que pensar que respuesta es
                     //MASK: {sender_username} + (privado): + {mensaje}
                     string message_priv = payload.sender() + " (private): " + payload.message();
-                    Payload payload;
-                    payload.set_sender("server");
-                    payload.set_message(message_priv);
-                    payload.set_code(200);
+                    server_payload.set_message(message_priv);
                     string out;
-                    payload.SerializeToString(&out);
+                    server_payload.SerializeToString(&out);
                     if (write(clients[i]->socket_d, out.c_str(), out.length()) < 0)
                     {
                         //Aca se mandaria 500 con el mensaje de error
-                        perror("Error: no se pudo enviar el mensaje privado");
+                        send_error_message("No se pudo mandar el mensaje privado.", sender_index);
                         break;
                     }
                     break;
                 }
             }
         }
+        if (found == 0)
+        {
+            send_error_message("El usuario ingresado no existe.", i);
+        }
     }
-    else if (payload.flag().compare("status") == 0)
+    else if (payload.flag() == Payload_PayloadFlag::Payload_PayloadFlag_update_status)
     {
         int new_status;
-        if (payload.message().compare("1") == 0)
+        if (payload.message().compare("ACTIVO") == 0)
         {
             new_status = ACTIVO;
         }
-        else if (payload.message().compare("2") == 0)
-        {
-            new_status = OCUPADO;
-        }
-        else
+        else if (payload.message().compare("INACTIVO") == 0)
         {
             new_status = INACTIVO;
         }
-        for (int i = 0; i < MAX_CLIENTS; ++i)
+        else
+        {
+            new_status = OCUPADO;
+        }
+        for (int i = 0; i < CLIENT_LIMIT; ++i)
         {
             if (clients[i])
             {
@@ -286,10 +325,13 @@ void send_message(char *mess, int uid)
                 if (strcmp(clients[i]->name, payload.sender().c_str()) == 0)
                 {
                     string message_update_status = "Status actualizado " + getStatusString(clients[i]->status) + " -> " + getStatusString(new_status);
+                    server_payload.set_message(message_update_status);
+                    string out;
+                    server_payload.SerializeToString(&out);
                     clients[i]->status = new_status;
-                    if (write(clients[i]->socket_d, message_update_status.c_str(), strlen(message_update_status.c_str())) < 0)
+                    if (write(clients[i]->socket_d, out.c_str(), out.length()) < 0)
                     {
-                        perror("ERROR: write to descriptor failed");
+                        send_error_message("Actualización del mensaje comprometido.", sender_index);
                         break;
                     }
                     break;
@@ -305,31 +347,43 @@ void send_message(char *mess, int uid)
     pthread_mutex_unlock(&clients_mutex);
 }
 
-/* Handle all communication with the client */
-void *handle_client(void *arg)
+void *manage_added_client(void *arg)
 {
-    char buff_out[BUFFER_SZ];
-    char name[32];
+    char buff_out[BUFFER_SIZE];
+    char register_m[LENGTH];
     int leave_flag = 0;
 
     cli_count++;
     client_t *cli = (client_t *)arg;
 
-    // Name
-    if (recv(cli->socket_d, name, 32, 0) <= 0 || strlen(name) < 2 || strlen(name) >= 32 - 1)
+    // Name checks
+    if (recv(cli->socket_d, register_m, LENGTH, 0) <= 0)
     {
         printf("Didn't enter the name.\n");
         leave_flag = 1;
     }
+    string rm(register_m);
+    Payload register_payload;
+    register_payload.ParseFromString(rm);
+    if (register_payload.sender().length() < 2 || register_payload.sender().length() >= 32 - 1)
+    {
+        printf("Didn't enter the name.\n");
+        leave_flag = 1;
+    }
+    else if (get_client_index(register_payload.sender()) >= 0)
+    {
+        printf("Username already exists.\n");
+        leave_flag = 1;
+    }
     else
     {
-        strcpy(cli->name, name);
+        strcpy(cli->name, register_payload.sender());
         sprintf(buff_out, "%s se ha unido al\n", cli->name);
         printf("%s", buff_out);
         send_message(buff_out, cli->uid);
     }
 
-    bzero(buff_out, BUFFER_SZ);
+    bzero(buff_out, BUFFER_SIZE);
 
     while (1)
     {
@@ -338,7 +392,7 @@ void *handle_client(void *arg)
             break;
         }
 
-        int receive = recv(cli->socket_d, buff_out, BUFFER_SZ, 0);
+        int receive = recv(cli->socket_d, buff_out, BUFFER_SIZE, 0);
         if (receive > 0)
         {
             if (strlen(buff_out) > 0)
@@ -362,7 +416,7 @@ void *handle_client(void *arg)
             leave_flag = 1;
         }
 
-        bzero(buff_out, BUFFER_SZ);
+        bzero(buff_out, BUFFER_SIZE);
     }
 
     /* Delete client from queue and yield thread */
@@ -397,7 +451,6 @@ int main(int argc, char **argv)
     serv_addr.sin_addr.s_addr = inet_addr(ip);
     serv_addr.sin_port = htons(port);
 
-    /* Ignore pipe signals */
     signal(SIGPIPE, SIG_IGN);
 
     if (setsockopt(listenfd, SOL_SOCKET, (SO_REUSEPORT | SO_REUSEADDR), (char *)&option, sizeof(option)) < 0)
@@ -406,21 +459,19 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 
-    /* Bind */
     if (bind(listenfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
     {
         perror("ERROR: Socket binding failed");
         return EXIT_FAILURE;
     }
 
-    /* Listen */
     if (listen(listenfd, 10) < 0)
     {
         perror("ERROR: Socket listening failed");
         return EXIT_FAILURE;
     }
 
-    printf("=== WELCOME TO THE CHATROOM ===\n");
+    printf("--- Bienvenidos al chat triste :c ---\n");
 
     while (1)
     {
@@ -428,9 +479,9 @@ int main(int argc, char **argv)
         connfd = accept(listenfd, (struct sockaddr *)&cli_addr, &clilen);
 
         /* Check if max clients is reached */
-        if ((cli_count + 1) == MAX_CLIENTS)
+        if ((cli_count + 1) == CLIENT_LIMIT)
         {
-            printf("Max clients reached. Rejected: ");
+            printf("Capacidad de clientes excedida: ");
             print_client_addr(cli_addr);
             printf(":%d\n", cli_addr.sin_port);
             close(connfd);
@@ -446,7 +497,7 @@ int main(int argc, char **argv)
 
         /* Add client to the queue and fork thread */
         queue_add(cli);
-        pthread_create(&tid, NULL, &handle_client, (void *)cli);
+        pthread_create(&tid, NULL, &manage_added_client, (void *)cli);
 
         /* Reduce CPU usage */
         sleep(1);
