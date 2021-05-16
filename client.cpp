@@ -132,15 +132,15 @@ int check_is_status(char message[])
         bzero(holder, LENGTH);
         return -1;
     }
-    if (strcmp(holder, "-s ACTIVO") == 0)
+    if (strcmp(message, "-s ACTIVO") == 0)
     {
         return 1;
     }
-    else if (strcmp(holder, "-s INACTIVO") == 0)
+    else if (strcmp(message, "-s INACTIVO") == 0)
     {
         return 2;
     }
-    else if (strcmp(holder, "-s OCUPADO") == 0)
+    else if (strcmp(message, "-s OCUPADO") == 0)
     {
         return 3;
     }

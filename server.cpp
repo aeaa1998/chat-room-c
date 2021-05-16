@@ -409,7 +409,7 @@ void *manage_added_client(void *arg)
         }
         else if (receive == 0 || strcmp(buff_out, "exit") == 0)
         {
-            sprintf(buff_out, "%s has left\n", cli->name);
+            sprintf(buff_out, "%s ha abandonado el chat\n", cli->name);
             printf("%s", buff_out);
             send_message(buff_out, cli->uid);
             leave_flag = 1;
