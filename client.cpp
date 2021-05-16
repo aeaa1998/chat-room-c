@@ -12,7 +12,7 @@
 #include "payload.pb.h"
 
 #define LENGTH 2048
-#define IP "ec2-13-58-87-181.us-east-2.compute.amazonaws.com"
+#define IP "ip-172-31-41-52.us-east-2.compute.internal"
 
 // Global variables
 using namespace std;

@@ -19,7 +19,7 @@ using namespace std;
 #define LENGTH 2048
 #define CLIENT_LIMIT 100
 #define BUFFER_SIZE 2048
-#define IP "ec2-13-58-87-181.us-east-2.compute.amazonaws.com"
+#define IP "ip-172-31-41-52.us-east-2.compute.internal"
 #define ACTIVO 1
 #define OCUPADO 2
 #define INACTIVO 3
