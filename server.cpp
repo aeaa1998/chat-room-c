@@ -341,10 +341,15 @@ void send_message(char *mess, int uid)
             }
         }
     }
-    else
+    else if (payload.flag() == Payload_PayloadFlag::Payload_PayloadFlag_general_chat)
     {
         string pm = payload.sender() + ": " + payload.message();
         server_payload.set_message(pm);
+        send_message_to_chat_group(server_payload, uid);
+    }
+    else
+    {
+        server_payload.set_message(payload.message());
         send_message_to_chat_group(server_payload, uid);
     }
 
