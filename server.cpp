@@ -19,7 +19,7 @@ using namespace std;
 #define LENGTH 2048
 #define CLIENT_LIMIT 100
 #define BUFFER_SIZE 2048
-#define IP "127.0.0.1"
+#define IP "13.58.87.181"
 #define ACTIVO 1
 #define OCUPADO 2
 #define INACTIVO 3
@@ -343,7 +343,6 @@ void send_message(char *mess, int uid)
     }
     else
     {
-        printf("QUE PEDO %s\n", message);
         if (payload.sender().empty())
         {
             server_payload.set_message(message);
