@@ -341,17 +341,19 @@ void send_message(char *mess, int uid)
             }
         }
     }
-    else if (payload.flag() == Payload_PayloadFlag::Payload_PayloadFlag_general_chat)
-    {
-        printf("QUE PEDO %s\n", message);
-        string pm = payload.sender() + ": " + payload.message();
-        server_payload.set_message(pm);
-        send_message_to_chat_group(server_payload, uid);
-    }
     else
     {
-        printf("QUE PEDO 2 %s\n", message);
-        server_payload.set_message(message);
+        printf("QUE PEDO %s\n", message);
+        if (payload.sender().empty())
+        {
+            server_payload.set_message(message);
+        }
+        else
+        {
+            string pm = payload.sender() + ": " + payload.message();
+            server_payload.set_message(pm);
+        }
+
         send_message_to_chat_group(server_payload, uid);
     }
 
