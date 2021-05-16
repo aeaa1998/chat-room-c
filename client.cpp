@@ -31,6 +31,7 @@ string getIPAddress()
     success = getifaddrs(&interfaces);
     if (success == 0)
     {
+        printf("here");
         // Loop through linked list of interfaces
         temp_addr = interfaces;
         while (temp_addr != NULL)
