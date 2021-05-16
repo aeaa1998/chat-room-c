@@ -195,6 +195,17 @@ void send_error_message(string message, int i)
     write(clients[i]->socket_d, out.c_str(), out.length());
 }
 
+void confirm(string message, int sender_index)
+{
+    Payload confirmation_message;
+    confirmation_message.set_sender("serve");
+    confirmation_message.set_message(message);
+    confirmation_message.set_code(200);
+    string out_lol;
+    confirmation_message.SerializeToString(&out_lol);
+    write(clients[sender_index]->socket_d, out_lol.c_str(), out_lol.length());
+}
+
 /* Manages what message to send private or not */
 void send_message(char *mess, int uid)
 {
@@ -255,7 +266,7 @@ void send_message(char *mess, int uid)
         {
             if (clients[i])
             {
-                if (strcmp(clients[i]->name, payload.sender().c_str()) == 0)
+                if (strcmp(clients[i]->name, payload.extra().c_str()) == 0)
                 {
                     found = 1;
                     if (write(clients[i]->socket_d, out.c_str(), out.length()) < 0)
@@ -281,6 +292,7 @@ void send_message(char *mess, int uid)
             {
                 if (strcmp(clients[i]->name, payload.extra().c_str()) == 0)
                 {
+                    confirm("Todo bien todo correcto.", sender_index);
                     found = 1;
                     //Se manda solo el string del mensaje privado al username destinado
                     //El client ya solo imprime el texto sin tener que pensar que respuesta es
@@ -349,6 +361,8 @@ void send_message(char *mess, int uid)
         }
         else
         {
+            confirm("Todo bien todo correcto.", sender_index);
+
             string pm = payload.sender() + ": " + payload.message();
             server_payload.set_message(pm);
         }
@@ -396,7 +410,8 @@ void *manage_added_client(void *arg)
     }
 
     bzero(buff_out, BUFFER_SIZE);
-
+    int sender_index = get_client_index(register_payload.sender());
+    confirm("Todo bien todo correcto te registraste.", sender_index);
     while (1)
     {
         if (leave_flag)
