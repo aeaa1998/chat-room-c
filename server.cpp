@@ -135,14 +135,16 @@ client_t *return_client(int uid)
 
 void send_message_to_chat_group(Payload payload, int uid)
 {
-    string message_priv = payload.sender() + ": " + payload.message();
+
+    string out;
+    payload.SerializeToString(&out);
     for (int i = 0; i < CLIENT_LIMIT; ++i)
     {
         if (clients[i])
         {
             if (clients[i]->uid != uid)
             {
-                if (write(clients[i]->socket_d, message_priv.c_str(), strlen(message_priv.c_str())) < 0)
+                if (write(clients[i]->socket_d, out.c_str(), strlen(out.c_str())) < 0)
                 {
                     perror("ERROR: write to descriptor failed");
                     break;
@@ -341,7 +343,8 @@ void send_message(char *mess, int uid)
     }
     else
     {
-        server_payload.set_message(payload.message());
+        string pm = payload.sender() + ": " + payload.message();
+        server_payload.set_message(pm);
         send_message_to_chat_group(server_payload, uid);
     }
 
