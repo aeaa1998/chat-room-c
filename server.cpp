@@ -256,7 +256,7 @@ void send_message(char *mess, int uid)
                 if (strcmp(clients[i]->name, payload.sender().c_str()) == 0)
                 {
                     found = 1;
-                    if (write(clientToSend->socket_d, out.c_str(), out.length()) < 0)
+                    if (write(clients[i]->socket_d, out.c_str(), out.length()) < 0)
                     {
                         send_error_message("No se pudo obtener la informacion del usuario deseado.", sender_index);
                         break;
