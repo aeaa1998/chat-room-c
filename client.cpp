@@ -12,7 +12,7 @@
 #include "payload.pb.h"
 
 #define LENGTH 2048
-#define IP "13.58.87.181"
+#define IP "172.31.41.52"
 
 // Global variables
 using namespace std;
