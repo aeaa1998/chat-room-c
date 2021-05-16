@@ -132,20 +132,15 @@ int check_is_status(char message[])
         bzero(holder, LENGTH);
         return -1;
     }
-    if (strlen(message) > 4)
-    {
-        return -1;
-    }
-
-    if (message[3] == 'ACTIVO')
+    if (strcmp(holder, "-s ACTIVO") == 0)
     {
         return 1;
     }
-    else if (message[3] == 'INACTIVO')
+    else if (strcmp(holder, "-s INACTIVO") == 0)
     {
         return 2;
     }
-    else if (message[3] == 'OCUPADO')
+    else if (strcmp(holder, "-s OCUPADO") == 0)
     {
         return 3;
     }
@@ -304,7 +299,7 @@ void *incoming_messages_handler(void *arg)
             }
             else
             {
-                printf("Error del server %d -- %s!", server_payload.code(), server_payload.message().c_str());
+                printf("Error del server %d -- %s!\n", server_payload.code(), server_payload.message().c_str());
             }
 
             str_overwrite_stdout();

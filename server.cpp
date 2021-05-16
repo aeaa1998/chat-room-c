@@ -167,7 +167,7 @@ string getStatusString(int code)
 
 string return_list(Payload payload)
 {
-    string message_list = "Lista de mensajes para " + payload.sender() + "\n";
+    string message_list = "Lista de usuarios para " + payload.sender() + "\n";
     for (int i = 0; i < CLIENT_LIMIT; ++i)
     {
         if (clients[i])
@@ -341,7 +341,8 @@ void send_message(char *mess, int uid)
     }
     else
     {
-        send_message_to_chat_group(payload, uid);
+        server_payload.set_message(payload.message());
+        send_message_to_chat_group(server_payload, uid);
     }
 
     pthread_mutex_unlock(&clients_mutex);
