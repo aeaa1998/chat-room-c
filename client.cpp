@@ -8,6 +8,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <pthread.h>
+#include <ifaddrs.h>
 #include "payload.pb.h"
 
 #define LENGTH 2048
@@ -303,7 +304,7 @@ void *incoming_messages_handler(void *arg)
             }
             else
             {
-                printf("Error del server %d -- %s!", server_payload.code(), server_payload.message().c_str())
+                printf("Error del server %d -- %s!", server_payload.code(), server_payload.message().c_str());
             }
 
             str_overwrite_stdout();
