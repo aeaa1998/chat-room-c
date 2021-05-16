@@ -386,7 +386,8 @@ void *manage_added_client(void *arg)
         p.set_sender("server");
         p.set_code(200);
         string out;
-        p.set_message(cli->name + " se ha unido al el chat.");
+        string nm(cli->name);
+        p.set_message(nm + " se ha unido al el chat.");
         p.SerializeToString(&out);
         sprintf(buff_out, "%s\n", out);
         printf("%s", buff_out);
@@ -419,7 +420,8 @@ void *manage_added_client(void *arg)
             p.set_sender("server");
             p.set_code(200);
             string out;
-            p.set_message(cli->name + " ha abandonado el chat.");
+            string nm(cli->name);
+            p.set_message(nm + " ha abandonado el chat.");
             p.SerializeToString(&out);
             sprintf(buff_out, "%s\n", out);
             printf("%s", buff_out);
