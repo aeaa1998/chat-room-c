@@ -38,11 +38,10 @@ string getIPAddress()
             if (temp_addr->ifa_addr->sa_family == AF_INET)
             {
                 // Check if interface is en0 which is the wifi connection on the iPhone
-                printf("%s \n", temp_addr->ifa_name);
-                if (strcmp(temp_addr->ifa_name, "en0") == 0)
-                {
-                    ipAddress = inet_ntoa(((struct sockaddr_in *)temp_addr->ifa_addr)->sin_addr);
-                }
+                // if (strcmp(temp_addr->ifa_name, "en0") == 0)
+                // {
+                ipAddress = inet_ntoa(((struct sockaddr_in *)temp_addr->ifa_addr)->sin_addr);
+                // }
             }
             temp_addr = temp_addr->ifa_next;
         }
