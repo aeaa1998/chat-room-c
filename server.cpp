@@ -19,7 +19,7 @@ using namespace std;
 #define LENGTH 2048
 #define CLIENT_LIMIT 100
 #define BUFFER_SIZE 2048
-#define IP "127.0.0.1"
+#define IP "0.0.0.0"
 #define ACTIVO 1
 #define OCUPADO 2
 #define INACTIVO 3
