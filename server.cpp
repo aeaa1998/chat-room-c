@@ -349,7 +349,7 @@ void send_message(char *mess, int uid)
     }
     else
     {
-        server_payload.set_message(payload.message());
+        server_payload.set_message(message);
         send_message_to_chat_group(server_payload, uid);
     }
 
@@ -387,14 +387,7 @@ void *manage_added_client(void *arg)
     else
     {
         strcpy(cli->name, register_payload.sender().c_str());
-        Payload p;
-        p.set_sender("server");
-        p.set_code(200);
-        string out;
-        string nm(cli->name);
-        p.set_message(nm + " se ha unido al el chat.");
-        p.SerializeToString(&out);
-        sprintf(buff_out, "%s\n", out);
+        sprintf(buff_out, "%s se ha unido al chat\n", cli->name);
         printf("%s", buff_out);
         send_message(buff_out, cli->uid);
     }
@@ -421,14 +414,7 @@ void *manage_added_client(void *arg)
         }
         else if (receive == 0 || strcmp(buff_out, "exit") == 0)
         {
-            Payload p;
-            p.set_sender("server");
-            p.set_code(200);
-            string out;
-            string nm(cli->name);
-            p.set_message(nm + " ha abandonado el chat.");
-            p.SerializeToString(&out);
-            sprintf(buff_out, "%s\n", out);
+            sprintf(buff_out, "%s ha abandonado el chat\n", cli->name);
             printf("%s", buff_out);
             send_message(buff_out, cli->uid);
             leave_flag = 1;
