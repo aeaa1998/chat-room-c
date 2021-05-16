@@ -20,46 +20,35 @@ volatile sig_atomic_t flag = 0;
 int sockfd = 0;
 char name[32];
 
-bool getMyIP(string &myIP)
+string getIPAddress()
 {
-    char szBuffer[1024];
-
-#ifdef WIN32
-    WSADATA wsaData;
-    WORD wVersionRequested = MAKEWORD(2, 0);
-    if (::WSAStartup(wVersionRequested, &wsaData) != 0)
-        return false;
-#endif
-
-    if (gethostname(szBuffer, sizeof(szBuffer)) == SOCKET_ERROR)
+    string ipAddress = "error";
+    struct ifaddrs *interfaces = NULL;
+    struct ifaddrs *temp_addr = NULL;
+    int success = 0;
+    // retrieve the current interfaces - returns 0 on success
+    success = getifaddrs(&interfaces);
+    if (success == 0)
     {
-#ifdef WIN32
-        WSACleanup();
-#endif
-        return false;
+        // Loop through linked list of interfaces
+        temp_addr = interfaces;
+        while (temp_addr != NULL)
+        {
+            if (temp_addr->ifa_addr->sa_family == AF_INET)
+            {
+                // Check if interface is en0 which is the wifi connection on the iPhone
+                if (strcmp(temp_addr->ifa_name, "en0") == 0)
+                {
+                    ipAddress = inet_ntoa(((struct sockaddr_in *)temp_addr->ifa_addr)->sin_addr);
+                }
+            }
+            temp_addr = temp_addr->ifa_next;
+        }
     }
-
-    struct hostent *host = gethostbyname(szBuffer);
-    if (host == NULL)
-    {
-#ifdef WIN32
-        WSACleanup();
-#endif
-        return false;
-    }
-
-    //Obtain the computer's IP
-    myIP += ((struct in_addr *)(host->h_addr))->S_un.S_un_b.s_b1;
-    myIP += ((struct in_addr *)(host->h_addr))->S_un.S_un_b.s_b2;
-    myIP += ((struct in_addr *)(host->h_addr))->S_un.S_un_b.s_b3;
-    myIP += ((struct in_addr *)(host->h_addr))->S_un.S_un_b.s_b4;
-
-#ifdef WIN32
-    WSACleanup();
-#endif
-    return true;
+    // Free memory
+    freeifaddrs(interfaces);
+    return ipAddress;
 }
-
 void str_overwrite_stdout()
 {
     printf("%s", "> ");
@@ -274,7 +263,7 @@ void *send_msg_handler(void *arg)
                     payload.set_message("OCUPADO");
                 }
 
-                payload.set_flag("status");
+                payload.set_flag(Payload_PayloadFlag::Payload_PayloadFlag_update_status);
                 string out;
                 payload.SerializeToString(&out);
                 sprintf(buffer, "%s", out.c_str());
@@ -377,8 +366,8 @@ int main(int argc, char **argv)
     // Send name
     Payload register_payload;
     register_payload.set_sender(name);
-    string my_ip;
-    if (!getMyIP(my_ip))
+    string my_ip = getIPAddress();
+    if (my_ip.compare("error") == 0)
     {
         printf("Solo perdidas");
         return EXIT_FAILURE;
