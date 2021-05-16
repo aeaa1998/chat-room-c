@@ -12,7 +12,7 @@
 #include "payload.pb.h"
 
 #define LENGTH 2048
-#define IP "ip-172-31-41-52.us-east-2.compute.internal"
+#define IP "172.31.41.52"
 
 // Global variables
 using namespace std;
@@ -358,7 +358,7 @@ int main(int argc, char **argv)
         printf("ERROR: connect\n");
         return EXIT_FAILURE;
     }
-
+    printf("conecto");
     // Send name
     Payload register_payload;
     register_payload.set_sender(name);
