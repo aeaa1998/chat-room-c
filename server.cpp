@@ -299,7 +299,7 @@ void send_message(char *mess, int uid)
         }
         if (found == 0)
         {
-            send_error_message("El usuario ingresado no existe.", i);
+            send_error_message("El usuario ingresado no existe.", sender_index);
         }
     }
     else if (payload.flag() == Payload_PayloadFlag::Payload_PayloadFlag_update_status)
