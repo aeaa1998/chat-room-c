@@ -430,7 +430,7 @@ void send_message(char *mess, int uid)
             }
         }
 
-        send_message_to_chat_group(server_payload, uid);
+        // send_message_to_chat_group(server_payload, uid);
     }
 
     pthread_mutex_unlock(&clients_mutex);
