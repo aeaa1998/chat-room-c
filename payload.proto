@@ -40,12 +40,12 @@ message Payload {
   optional string ip = 2;
   optional string message = 3;
   enum PayloadFlag {
-    general_chat = 1;
-    private_chat = 2;
-    update_status = 3;
-    user_info = 4;
-    user_list = 5;
-    register = 6;
+    general_chat = 0;
+    private_chat = 1;
+    update_status = 2;
+    user_info = 3;
+    user_list = 4;
+    register = 5;
   }
   optional PayloadFlag flag = 4;
   optional string extra = 5;
