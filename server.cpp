@@ -387,7 +387,7 @@ void send_message(char *mess, int uid)
         if (payload.sender().empty())
         {
 
-            server_payload.set_flag(0);
+            // server_payload.set_flag(0);
             server_payload.set_message(message);
             for (int i = 0; i < CLIENT_LIMIT; ++i)
             {
