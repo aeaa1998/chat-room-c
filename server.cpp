@@ -388,8 +388,8 @@ void send_message(char *mess, int uid)
     {
         if (payload.sender().empty())
         {
-            server_payload.set_flag(Payload_PayloadFlag::Payload_PayloadFlag_general_chat);
-            server_payload.set_message(message);
+            // server_payload.set_flag(Payload_PayloadFlag::Payload_PayloadFlag_general_chat);
+            // server_payload.set_message(message);
         }
         else
         {
