@@ -388,53 +388,49 @@ void send_message(char *mess, int uid)
             server_payload.set_code(200);
             server_payload.set_flag(Payload_PayloadFlag::Payload_PayloadFlag_general_chat);
             server_payload.set_message(message);
-            string send;
-            payload.SerializeToString(&send);
-            send_message_to_chat_group(send, uid);
-            // for (int i = 0; i < CLIENT_LIMIT; ++i)
-            // {
-            //     if (clients[i])
-            //     {
-            //         if (clients[i]->uid != uid)
-            //         {
-            //             payload.set_code(200);
-            //             string send;
-            //             payload.SerializeToString(&send);
-            //             if (write(clients[i]->socket_d, send.c_str(), send.length()) < 0)
-            //             {
-            //                 perror("ERROR: write to descriptor failed");
-            //                 break;
-            //             }
-            //         }
-            //     }
-            // }
+            for (int i = 0; i < CLIENT_LIMIT; ++i)
+            {
+                if (clients[i])
+                {
+                    if (clients[i]->uid != uid)
+                    {
+                        payload.set_code(200);
+                        string send;
+                        payload.SerializeToString(&send);
+                        if (write(clients[i]->socket_d, send.c_str(), send.length()) < 0)
+                        {
+                            perror("ERROR: write to descriptor failed");
+                            break;
+                        }
+                    }
+                }
+            }
         }
         else
         {
             server_payload.set_flag(Payload_PayloadFlag::Payload_PayloadFlag_general_chat);
             string pm = payload.sender() + "(general): " + payload.message();
             server_payload.set_message(pm);
-            string send;
-            payload.SerializeToString(&send);
-            send_message_to_chat_group(send, uid);
-            // for (int i = 0; i < CLIENT_LIMIT; ++i)
-            // {
-            //     if (clients[i])
-            //     {
-            //         if (clients[i]->uid != uid)
-            //         {
-            //             payload.set_code(200);
-            //             string send;
-            //             payload.SerializeToString(&send);
-            //             if (write(clients[i]->socket_d, send.c_str(), send.length()) < 0)
-            //             {
-            //                 perror("ERROR: write to descriptor failed");
-            //                 break;
-            //             }
-            //         }
-            //     }
-            // }
+            for (int i = 0; i < CLIENT_LIMIT; ++i)
+            {
+                if (clients[i])
+                {
+                    if (clients[i]->uid != uid)
+                    {
+                        payload.set_code(200);
+                        string send;
+                        payload.SerializeToString(&send);
+                        if (write(clients[i]->socket_d, send.c_str(), send.length()) < 0)
+                        {
+                            perror("ERROR: write to descriptor failed");
+                            break;
+                        }
+                    }
+                }
+            }
         }
+
+        send_message_to_chat_group(server_payload, uid);
     }
 
     pthread_mutex_unlock(&clients_mutex);
