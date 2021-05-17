@@ -56,6 +56,21 @@ int get_client_index(string name)
     return -1;
 }
 
+int get_client_index_uid(int uid)
+{
+    for (int i = 0; i < CLIENT_LIMIT; ++i)
+    {
+        if (clients[i])
+        {
+            if (clients[i]->uid == uid)
+            {
+                return i;
+            }
+        }
+    }
+    return -1;
+}
+
 void str_overwrite_stdout()
 {
     printf("\r%s", "> ");
@@ -133,18 +148,19 @@ client_t *return_client(int uid)
     }
 }
 
-void send_message_to_chat_group(Payload payload, int uid)
+void send_message_to_chat_group(Payload ppp, int uid)
 {
 
-    string out;
-    payload.SerializeToString(&out);
+    string send;
+    ppp.set_code(200);
+    ppp.SerializeToString(&send);
     for (int i = 0; i < CLIENT_LIMIT; ++i)
     {
         if (clients[i])
         {
             if (clients[i]->uid != uid)
             {
-                if (write(clients[i]->socket_d, out.c_str(), strlen(out.c_str())) < 0)
+                if (write(clients[i]->socket_d, send.c_str(), send.length()) < 0)
                 {
                     perror("ERROR: write to descriptor failed");
                     break;
@@ -205,12 +221,13 @@ void exit_user(int i)
     write(clients[i]->socket_d, out.c_str(), out.length());
 }
 
-void confirm(string message, int sender_index)
+void confirm(string message, int sender_index, Payload_PayloadFlag flag)
 {
     Payload confirmation_message;
     confirmation_message.set_sender("serve");
     confirmation_message.set_message(message);
     confirmation_message.set_code(200);
+    confirmation_message.set_flag(flag);
     string out_lol;
     confirmation_message.SerializeToString(&out_lol);
     write(clients[sender_index]->socket_d, out_lol.c_str(), out_lol.length());
@@ -260,6 +277,7 @@ void send_message(char *mess, int uid)
             {
                 if (strcmp(clients[i]->name, payload.extra().c_str()) == 0)
                 {
+                    found = 1;
                     string username(clients[i]->name);
                     string uuid_s = to_string(clients[i]->uid);
                     char address_arr[LENGTH];
@@ -278,9 +296,8 @@ void send_message(char *mess, int uid)
         {
             if (clients[i])
             {
-                if (strcmp(clients[i]->name, payload.extra().c_str()) == 0)
+                if (strcmp(clients[i]->name, payload.sender().c_str()) == 0)
                 {
-                    found = 1;
                     if (write(clients[i]->socket_d, out.c_str(), out.length()) < 0)
                     {
                         send_error_message("No se pudo obtener la informacion del usuario deseado.", sender_index);
@@ -370,7 +387,8 @@ void send_message(char *mess, int uid)
     {
         if (payload.sender().empty())
         {
-            server_payload.set_flag(Payload_PayloadFlag::Payload_PayloadFlag_register_);
+            server_payload.set_code(200);
+            server_payload.set_flag(Payload_PayloadFlag::Payload_PayloadFlag_general_chat);
             server_payload.set_message(message);
         }
         else
@@ -426,15 +444,17 @@ void *manage_added_client(void *arg)
     }
 
     bzero(buff_out, BUFFER_SIZE);
-    int sender_index = get_client_index(register_payload.sender());
-    confirm("Todo bien todo correcto te registraste.", sender_index);
+    int sender_index = get_client_index_uid(cli->uid);
+    if (invalid_flag == 0)
+    {
+        confirm("Todo bien todo correcto te registraste.", sender_index);
+    }
     while (1)
     {
         if (leave_flag)
         {
             if (invalid_flag)
             {
-                int sender_index = get_client_index(register_payload.sender());
                 exit_user(sender_index);
             }
             break;
