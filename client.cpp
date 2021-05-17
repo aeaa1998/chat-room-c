@@ -20,6 +20,7 @@ using namespace std;
 volatile sig_atomic_t flag = 0;
 int sockfd = 0;
 char name[32];
+char ip[LENGTH];
 
 string getIPAddress()
 {
@@ -319,23 +320,22 @@ void *incoming_messages_handler(void *arg)
 int main(int argc, char **argv)
 {
     char buffer[LENGTH + 32];
-    if (argc != 3)
+    if (argc != 4)
     {
-        printf("Usage: %s <port>\n", argv[0]);
+        printf("Uso: %s <port> <username> <ip>\n", argv[0]);
         return EXIT_FAILURE;
     }
 
     int port = atoi(argv[1]);
     // char *n = argv[2];
 
-    char *ip = IP;
-
     signal(SIGINT, catch_ctrl_c_and_exit);
 
-    // printf("Please enter your name: ");
     strcpy(name, argv[2]);
-    // fgets(name, 32, stdin);
     str_trim_lf(name, strlen(name));
+
+    strcpy(ip, argv[3]);
+    str_trim_lf(ip, strlen(ip));
 
     if (strlen(name) > 32 || strlen(name) < 2)
     {
@@ -344,11 +344,11 @@ int main(int argc, char **argv)
     }
 
     struct sockaddr_in server_addr;
-
+    char *ip_normalized = ip;
     /* Socket settings */
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     server_addr.sin_family = AF_INET;
-    server_addr.sin_addr.s_addr = inet_addr(ip);
+    server_addr.sin_addr.s_addr = inet_addr(ip_normalized);
     server_addr.sin_port = htons(port);
 
     // Connect to Server

@@ -215,6 +215,7 @@ void send_message(char *mess, int uid)
     payload.ParseFromString(message);
     int sender_index = get_client_index(payload.sender());
     Payload server_payload;
+    server_payload.set_flag(payload.flag());
     server_payload.set_sender("server");
     server_payload.set_code(200);
 
@@ -292,7 +293,6 @@ void send_message(char *mess, int uid)
             {
                 if (strcmp(clients[i]->name, payload.extra().c_str()) == 0)
                 {
-                    confirm("Todo bien todo correcto.", sender_index);
                     found = 1;
                     //Se manda solo el string del mensaje privado al username destinado
                     //El client ya solo imprime el texto sin tener que pensar que respuesta es
@@ -357,13 +357,12 @@ void send_message(char *mess, int uid)
     {
         if (payload.sender().empty())
         {
+            server_payload.set_flag(Payload_PayloadFlag::Payload_PayloadFlag_register_);
             server_payload.set_message(message);
         }
         else
         {
-            confirm("Todo bien todo correcto.", sender_index);
-
-            string pm = payload.sender() + ": " + payload.message();
+            string pm = payload.sender() + "(general): " + payload.message();
             server_payload.set_message(pm);
         }
 
