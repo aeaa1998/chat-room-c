@@ -403,6 +403,7 @@ void send_message(char *mess, int uid)
                     if (clients[i]->uid != uid)
                     {
                         string out;
+                        server_payload.set_code(200);
                         server_payload.SerializeToString(&out);
                         if (write(clients[i]->socket_d, out.c_str(), out.length()) < 0)
                         {
