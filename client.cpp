@@ -298,6 +298,11 @@ void *incoming_messages_handler(void *arg)
             {
                 printf("%s \n", server_payload.message().c_str());
             }
+            else if (server_payload.code() == 401)
+            {
+                printf("%s \n", server_payload.message().c_str());
+                break;
+            }
             else
             {
                 printf("Error del server %d -- %s!\n", server_payload.code(), server_payload.message().c_str());

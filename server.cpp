@@ -194,6 +194,16 @@ void send_error_message(string message, int i)
     error_payload.SerializeToString(&out);
     write(clients[i]->socket_d, out.c_str(), out.length());
 }
+void exit_user(int i)
+{
+    Payload error_payload;
+    error_payload.set_code(401);
+    error_payload.set_sender("server");
+    error_payload.set_message("Usted ha sido pateado del server");
+    string out;
+    error_payload.SerializeToString(&out);
+    write(clients[i]->socket_d, out.c_str(), out.length());
+}
 
 void confirm(string message, int sender_index)
 {
@@ -362,6 +372,7 @@ void send_message(char *mess, int uid)
         }
         else
         {
+            server_payload.set_code(200);
             string pm = payload.sender() + "(general): " + payload.message();
             server_payload.set_message(pm);
         }
@@ -377,6 +388,7 @@ void *manage_added_client(void *arg)
     char buff_out[BUFFER_SIZE];
     char register_m[LENGTH];
     int leave_flag = 0;
+    int invalid_flag = 0;
 
     cli_count++;
     client_t *cli = (client_t *)arg;
@@ -398,6 +410,7 @@ void *manage_added_client(void *arg)
     else if (get_client_index(register_payload.sender()) >= 0)
     {
         printf("Username already exists.\n");
+        invalid_flag = 1;
         leave_flag = 1;
     }
     else
@@ -415,6 +428,11 @@ void *manage_added_client(void *arg)
     {
         if (leave_flag)
         {
+            if (invalid_flag)
+            {
+                int sender_index = get_client_index(register_payload.sender());
+                exit_user(sender_index);
+            }
             break;
         }
 
