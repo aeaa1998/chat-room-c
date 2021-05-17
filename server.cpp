@@ -402,7 +402,9 @@ void send_message(char *mess, int uid)
                 {
                     if (clients[i]->uid != uid)
                     {
-                        if (write(clients[i]->socket_d, send.c_str(), send.length()) < 0)
+                        string out;
+                        server_payload.SerializeToString(&out);
+                        if (write(clients[i]->socket_d, out.c_str(), out.length()) < 0)
                         {
                             perror("ERROR: write to descriptor failed");
                             break;
