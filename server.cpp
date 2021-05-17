@@ -270,6 +270,7 @@ void send_message(char *mess, int uid)
     }
     else if (payload.flag() == Payload_PayloadFlag::Payload_PayloadFlag_user_info)
     {
+        int found = 0;
         string info_of_user = "";
         for (int i = 0; i < CLIENT_LIMIT; ++i)
         {
@@ -291,7 +292,7 @@ void send_message(char *mess, int uid)
         server_payload.set_message(info_of_user);
         string out;
         server_payload.SerializeToString(&out);
-        int found = 0;
+
         for (int i = 0; i < CLIENT_LIMIT; ++i)
         {
             if (clients[i])
