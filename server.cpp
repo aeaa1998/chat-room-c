@@ -154,6 +154,7 @@ void send_message_to_chat_group(Payload ppp, int uid)
     string send;
     ppp.set_code(200);
     ppp.SerializeToString(&send);
+    printf("no entiendo que onda con esto %d $s", ppp.code(), ppp.message());
     for (int i = 0; i < CLIENT_LIMIT; ++i)
     {
         if (clients[i])
