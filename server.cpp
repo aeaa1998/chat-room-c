@@ -346,11 +346,11 @@ void send_message(char *mess, int uid)
     else if (payload.flag() == Payload_PayloadFlag::Payload_PayloadFlag_update_status)
     {
         int new_status;
-        if (payload.message().compare("ACTIVO") == 0)
+        if (payload.extra().compare("ACTIVO") == 0)
         {
             new_status = ACTIVO;
         }
-        else if (payload.message().compare("INACTIVO") == 0)
+        else if (payload.extra().compare("INACTIVO") == 0)
         {
             new_status = INACTIVO;
         }

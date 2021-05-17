@@ -250,13 +250,16 @@ void *send_msg_handler(void *arg)
                 if (status == 1)
                 {
                     payload.set_message("ACTIVO");
+                    payload.set_extra("ACTIVO");
                 }
                 else if (status == 2)
                 {
+                    payload.set_extra("INACTIVO");
                     payload.set_message("INACTIVO");
                 }
                 else
                 {
+                    payload.set_extra("OCUPADO");
                     payload.set_message("OCUPADO");
                 }
 
