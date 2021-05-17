@@ -448,7 +448,7 @@ void *manage_added_client(void *arg)
     int sender_index = get_client_index_uid(cli->uid);
     if (invalid_flag == 0)
     {
-        confirm("Todo bien todo correcto te registraste.", sender_index);
+        confirm("Todo bien todo correcto te registraste.", sender_index, Payload_PayloadFlag::Payload_PayloadFlag_register_);
     }
     while (1)
     {
