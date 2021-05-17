@@ -225,7 +225,6 @@ void send_message(char *mess, int uid)
     payload.ParseFromString(message);
     int sender_index = get_client_index(payload.sender());
     Payload server_payload;
-    server_payload.set_flag(payload.flag());
     server_payload.set_sender("server");
     server_payload.set_code(200);
 
@@ -239,6 +238,7 @@ void send_message(char *mess, int uid)
                 if (strcmp(clients[i]->name, payload.sender().c_str()) == 0)
                 {
                     string message_list = return_list(payload);
+                    server_payload.set_flag(Payload_PayloadFlag::Payload_PayloadFlag_user_list);
                     server_payload.set_message(message_list);
                     string out;
                     server_payload.SerializeToString(&out);
@@ -269,6 +269,7 @@ void send_message(char *mess, int uid)
                 }
             }
         }
+        server_payload.set_flag(Payload_PayloadFlag::Payload_PayloadFlag_user_info);
         server_payload.set_message(info_of_user);
         string out;
         server_payload.SerializeToString(&out);
@@ -307,6 +308,7 @@ void send_message(char *mess, int uid)
                     //Se manda solo el string del mensaje privado al username destinado
                     //El client ya solo imprime el texto sin tener que pensar que respuesta es
                     //MASK: {sender_username} + (privado): + {mensaje}
+                    server_payload.set_flag(Payload_PayloadFlag::Payload_PayloadFlag_private_chat);
                     string message_priv = payload.sender() + " (private): " + payload.message();
                     server_payload.set_message(message_priv);
                     string out;
@@ -351,6 +353,7 @@ void send_message(char *mess, int uid)
                     string message_update_status = "Status actualizado " + getStatusString(clients[i]->status) + " -> " + getStatusString(new_status);
                     server_payload.set_message(message_update_status);
                     string out;
+                    server_payload.set_flag(Payload_PayloadFlag::Payload_PayloadFlag_update_status);
                     server_payload.SerializeToString(&out);
                     clients[i]->status = new_status;
                     if (write(clients[i]->socket_d, out.c_str(), out.length()) < 0)
@@ -373,6 +376,7 @@ void send_message(char *mess, int uid)
         else
         {
             server_payload.set_code(200);
+            server_payload.set_flag(Payload_PayloadFlag::Payload_PayloadFlag_general_chat);
             string pm = payload.sender() + "(general): " + payload.message();
             server_payload.set_message(pm);
         }
