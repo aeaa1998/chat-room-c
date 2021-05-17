@@ -453,9 +453,9 @@ void *manage_added_client(void *arg)
     else
     {
         strcpy(cli->name, register_payload.sender().c_str());
-        sprintf(buff_out, "%s se ha unido al chat\n", cli->name);
-        printf("%s", buff_out);
-        send_message(buff_out, cli->uid);
+        // sprintf(buff_out, "%s se ha unido al chat\n", cli->name);
+        // printf("%s", buff_out);
+        // send_message(buff_out, cli->uid);
     }
 
     bzero(buff_out, BUFFER_SIZE);
