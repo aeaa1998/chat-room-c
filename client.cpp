@@ -297,7 +297,7 @@ void *incoming_messages_handler(void *arg)
         {
             Payload server_payload;
             server_payload.ParseFromString(message);
-            if (server_payload.code() == 200)
+            if (server_payload.code() == 200 || server_payload.flag() == Payload_PayloadFlag::Payload_PayloadFlag_general_chat)
             {
                 printf("%s \n", server_payload.message().c_str());
             }

@@ -387,7 +387,7 @@ void send_message(char *mess, int uid)
         {
             server_payload.set_code(200);
 
-            server_payload.set_flag(Payload_PayloadFlag::Payload_PayloadFlag_private_chat);
+            server_payload.set_flag(Payload_PayloadFlag::Payload_PayloadFlag_general_chat);
             server_payload.set_message(message);
             for (int i = 0; i < CLIENT_LIMIT; ++i)
             {
@@ -409,7 +409,7 @@ void send_message(char *mess, int uid)
         }
         else
         {
-            server_payload.set_flag(Payload_PayloadFlag::Payload_PayloadFlag_private_chat);
+            server_payload.set_flag(Payload_PayloadFlag::Payload_PayloadFlag_general_chat);
             string pm = payload.sender() + "(general): " + payload.message();
             server_payload.set_message(pm);
             for (int i = 0; i < CLIENT_LIMIT; ++i)
